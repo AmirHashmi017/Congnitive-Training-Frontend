@@ -10,7 +10,7 @@ interface GamificationPanelProps {
 
 const GamificationPanel: React.FC<GamificationPanelProps> = ({ streak, xp, difficulty, seeds }) => {
     return (
-        <div className="h-full min-h-0 bg-white p-4 flex flex-col gap-6 overflow-auto">
+        <div className="h-full w-full min-h-0 bg-white p-4 flex flex-col gap-6 overflow-auto">
             {/* Avatar Section (compact) */}
             <div className="flex flex-col items-center gap-3 py-3">
                 <div className="w-24 h-24 bg-surface rounded-full flex items-center justify-center border-4 border-primary/20 shadow-inner">

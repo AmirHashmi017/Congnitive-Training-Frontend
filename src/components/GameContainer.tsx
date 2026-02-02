@@ -18,9 +18,9 @@ const GameContainer: React.FC = () => {
     if (!round) return <div>Loading...</div>;
 
     return (
-        <div className="flex flex-col md:flex-row h-screen bg-background overflow-hidden">
-            {/* Gameplay Area (flexible) */}
-            <div className="w-full md:flex-1 flex flex-col h-full p-4 md:p-6 lg:p-8 border-r-2 border-gray-50 min-h-0">
+        <div className="flex flex-col md:flex-row h-screen w-screen bg-background overflow-hidden">
+            {/* Gameplay Area - 75% width */}
+            <div className="w-full md:w-2/3 flex flex-col h-full p-4 md:p-6 lg:p-8 border-r-2 border-gray-50 min-h-0 shrink-0">
                 {/* Header / Rule Section */}
                 <div className="w-full mb-4">
                     <div className="flex items-center gap-3 mb-2">
@@ -62,8 +62,8 @@ const GameContainer: React.FC = () => {
                 </div>
             </div>
 
-            {/* Gamification Panel (capped width) */}
-            <div className="w-full md:w-[30%] md:max-w-[360px]">
+            {/* Gamification Panel - 25% width */}
+            <div className="w-full md:w-1/3 h-full shrink-0">
                 <GamificationPanel
                     streak={streak}
                     xp={xp}

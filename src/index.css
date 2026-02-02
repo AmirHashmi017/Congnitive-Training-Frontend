@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #58cc02;
+  --color-primary-dark: #46a302;
+  --color-secondary: #1cb0f6;
+  --color-secondary-dark: #1899d6;
+  --color-danger: #ff4b4b;
+  --color-danger-dark: #d33131;
+  --color-warning: #ffc800;
+  --color-warning-dark: #e5a400;
+  --color-background: #ffffff;
+  --color-surface: #f7f7f7;
+  --color-text: #4b4b4b;
+  --color-text-muted: #afafaf;
+
+  --font-sans: "Inter", "Roboto", "system-ui", "sans-serif";
+
+  --shadow-duo: 0 4px 0 0 rgba(0, 0, 0, 0.1);
+  --shadow-duo-active: 0 2px 0 0 rgba(0, 0, 0, 0.1);
+}
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: #4b4b4b;
+  background-color: #ffffff;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+/* Custom Duolingo-style button classes */
+@layer components {
+  .btn-primary {
+    @apply bg-primary hover:bg-primary-dark text-white font-bold py-3 px-6 rounded-2xl shadow-duo active:shadow-duo-active active:translate-y-[2px] transition-all;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary hover:bg-secondary-dark text-white font-bold py-3 px-6 rounded-2xl shadow-duo active:shadow-duo-active active:translate-y-[2px] transition-all;
+  }
+
+  .card-interactive {
+    @apply border-2 border-gray-200 rounded-2xl p-4 cursor-pointer hover:bg-gray-50 active:translate-y-[2px] transition-all;
+  }
+
+  .card-selected {
+    @apply border-secondary bg-blue-50;
+  }
+
+  /* Animations */
+  @keyframes shake {
+
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+
+    25% {
+      transform: translateX(-5px) rotate(-1deg);
+    }
+
+    75% {
+      transform: translateX(5px) rotate(1deg);
+    }
+  }
+
+  .animate-shake {
+    animation: shake 0.2s cubic-bezier(.36, .07, .19, .97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+}

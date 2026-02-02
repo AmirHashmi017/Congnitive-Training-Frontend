@@ -19,8 +19,8 @@ const GameContainer: React.FC = () => {
 
     return (
         <div className="flex flex-col md:flex-row h-screen bg-background overflow-hidden">
-            {/* 70% Gameplay Area */}
-            <div className="w-full md:w-[70%] flex flex-col h-full p-4 md:p-6 lg:p-8 border-r-2 border-gray-50">
+            {/* Gameplay Area (flexible) */}
+            <div className="w-full md:flex-1 flex flex-col h-full p-4 md:p-6 lg:p-8 border-r-2 border-gray-50 min-h-0">
                 {/* Header / Rule Section */}
                 <div className="w-full mb-4">
                     <div className="flex items-center gap-3 mb-2">
@@ -50,7 +50,7 @@ const GameContainer: React.FC = () => {
                 {/* Matching Grid */}
                 <div className="w-full grid grid-cols-2 gap-4 flex-1 content-center overflow-hidden pb-2">
                     {round.options.map((option, index) => (
-                        <div key={index} className="aspect-square max-h-[150px] lg:max-h-[180px] mx-auto w-full">
+                        <div key={index} className="aspect-square max-h-[120px] lg:max-h-[160px] mx-auto w-full">
                             <MatchingCard
                                 attributes={option}
                                 onClick={() => handleSelection(index)}
@@ -62,8 +62,8 @@ const GameContainer: React.FC = () => {
                 </div>
             </div>
 
-            {/* 30% Gamification Panel */}
-            <div className="w-full md:w-[30%] flex-shrink-0">
+            {/* Gamification Panel (capped width) */}
+            <div className="w-full md:w-[30%] md:max-w-[360px]">
                 <GamificationPanel
                     streak={streak}
                     xp={xp}

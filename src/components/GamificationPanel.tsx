@@ -10,48 +10,48 @@ interface GamificationPanelProps {
 
 const GamificationPanel: React.FC<GamificationPanelProps> = ({ streak, xp, difficulty, seeds }) => {
     return (
-        <div className="h-full min-h-0 bg-white p-6 flex flex-col gap-8">
-            {/* Avatar Section */}
-            <div className="flex flex-col items-center gap-4 py-6">
-                <div className="w-28 h-28 bg-surface rounded-full flex items-center justify-center border-4 border-primary/20 shadow-inner">
-                    <User size={56} className="text-gray-300" />
+        <div className="h-full min-h-0 bg-white p-4 flex flex-col gap-6 overflow-auto">
+            {/* Avatar Section (compact) */}
+            <div className="flex flex-col items-center gap-3 py-3">
+                <div className="w-24 h-24 bg-surface rounded-full flex items-center justify-center border-4 border-primary/20 shadow-inner">
+                    <User size={48} className="text-gray-300" />
                 </div>
                 <div className="text-center">
-                    <h2 className="text-xl font-bold text-text uppercase tracking-tight">Trainee</h2>
+                    <h2 className="text-lg font-bold text-text uppercase tracking-tight">Trainee</h2>
                     <p className="text-text-muted text-sm font-medium">Level {difficulty} Explorer</p>
                 </div>
             </div>
 
-            {/* Stats Section */}
-            <div className="flex flex-col gap-4">
-                <div className="bg-surface rounded-2xl p-4 flex items-center justify-between shadow-duo">
+            {/* Stats Section (compact) */}
+            <div className="flex flex-col gap-3">
+                <div className="bg-surface rounded-2xl p-3 flex items-center justify-between shadow-duo">
                     <div className="flex items-center gap-3">
                         <div className="bg-primary/20 p-2 rounded-xl">
-                            <Sprout className="text-primary" size={24} />
+                            <Sprout className="text-primary" size={20} />
                         </div>
                         <span className="font-bold text-text uppercase text-xs tracking-wider">Seeds</span>
                     </div>
-                    <span className="text-xl font-black text-primary">{seeds}</span>
+                    <span className="text-lg font-black text-primary">{seeds}</span>
                 </div>
 
-                <div className="bg-surface rounded-2xl p-4 flex items-center justify-between shadow-duo">
+                <div className="bg-surface rounded-2xl p-3 flex items-center justify-between shadow-duo">
                     <div className="flex items-center gap-3">
                         <div className="bg-warning/20 p-2 rounded-xl">
-                            <Flame className="text-warning" size={24} />
+                            <Flame className="text-warning" size={20} />
                         </div>
                         <span className="font-bold text-text uppercase text-xs tracking-wider">Streak</span>
                     </div>
-                    <span className="text-xl font-black text-warning">{streak}</span>
+                    <span className="text-lg font-black text-warning">{streak}</span>
                 </div>
 
-                <div className="bg-surface rounded-2xl p-4 flex items-center justify-between shadow-duo">
+                <div className="bg-surface rounded-2xl p-3 flex items-center justify-between shadow-duo">
                     <div className="flex items-center gap-3">
                         <div className="bg-secondary/20 p-2 rounded-xl">
-                            <Trophy className="text-secondary" size={24} />
+                            <Trophy className="text-secondary" size={20} />
                         </div>
                         <span className="font-bold text-text uppercase text-xs tracking-wider">XP</span>
                     </div>
-                    <span className="text-xl font-black text-secondary">{xp}</span>
+                    <span className="text-lg font-black text-secondary">{xp}</span>
                 </div>
             </div>
 

@@ -1,6 +1,6 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import type { PuzzleRound } from '../types';
-import { generatePuzzle, RULE_POOL } from '../utils/solver';
+import { generatePuzzle, getRulesByXP } from '../utils/solver';
 
 export const useGameEngine = () => {
     const [round, setRound] = useState<PuzzleRound | null>(null);
@@ -9,13 +9,19 @@ export const useGameEngine = () => {
     const [difficulty, setDifficulty] = useState(1);
     const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
 
+    // Use a ref to keep startNewRound stable and avoid accidental re-triggers when XP updates
+    const xpRef = useRef(xp);
+    useEffect(() => {
+        xpRef.current = xp;
+    }, [xp]);
+
     const startNewRound = useCallback(() => {
-        // Select rule based on difficulty or random for now
-        const rule = RULE_POOL[Math.floor(Math.random() * RULE_POOL.length)];
+        const availableRules = getRulesByXP(xpRef.current);
+        const rule = availableRules[Math.floor(Math.random() * availableRules.length)];
         const newPuzzle = generatePuzzle(rule);
         setRound(newPuzzle as any);
         setFeedback(null);
-    }, [difficulty]);
+    }, []); // Identity is stable across XP updates
 
     useEffect(() => {
         startNewRound();

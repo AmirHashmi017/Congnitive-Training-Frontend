@@ -36,6 +36,7 @@ export interface GameRule {
     | 'same_color_diff_shape'
     | 'same_shape_same_color'
     | 'same_value'
+    | 'not_value'
     | 'same_color_diff_value'
     | 'same_value_diff_color'
     | 'same_shape_diff_value'

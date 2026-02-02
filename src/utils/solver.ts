@@ -22,6 +22,8 @@ export const checkMatch = (target: ShapeAttributes, option: ShapeAttributes, rul
             return target.type === option.type && target.color === option.color;
         case 'same_value':
             return target.value === option.value;
+        case 'not_value':
+            return target.value !== option.value;
         case 'same_color_diff_value':
             return target.color === option.color && target.value !== option.value;
         case 'same_value_diff_color':
@@ -52,6 +54,7 @@ export const RULE_POOL: GameRule[] = [
     { id: '6', description: 'Same color but not same shape', matchType: 'same_color_diff_shape' },
     { id: '7', description: 'Identical: Same shape and color', matchType: 'same_shape_same_color' },
     { id: '8', description: 'Match the same number', matchType: 'same_value' },
+    { id: '17', description: 'Find a DIFFERENT number', matchType: 'not_value' },
     { id: '9', description: 'Same color but different number', matchType: 'same_color_diff_value' },
     { id: '10', description: 'Same number but different color', matchType: 'same_value_diff_color' },
     { id: '11', description: 'Same shape but different number', matchType: 'same_shape_diff_value' },
@@ -115,6 +118,12 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
             correctOption = ShapeFactory.generateShape({ value: target.value });
             while (correctOption.type === target.type && correctOption.color === target.color) {
                 correctOption = ShapeFactory.generateShape({ value: target.value });
+            }
+            break;
+        case 'not_value':
+            correctOption = ShapeFactory.generateShape({ type: target.type, color: target.color });
+            while (correctOption.value === target.value) {
+                correctOption = ShapeFactory.generateShape({ type: target.type, color: target.color });
             }
             break;
         case 'same_color_diff_value':
@@ -190,6 +199,10 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
                     // Trap for "diff" rules: create an IDENTICAL shape that violates the rule
                     candidate = ShapeFactory.generateShape({ color: target.color, type: target.type, value: target.value });
                     break;
+                case 'not_value':
+                    // Trap: same value (identical shape)
+                    candidate = ShapeFactory.generateShape({ color: target.color, type: target.type, value: target.value });
+                    break;
                 case 'triple_match':
                     // Trap for triple match: share 2 out of 3 attributes
                     const rand = Math.random();
@@ -245,4 +258,36 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
     }
 
     return { target, options: shuffled, correctIndex, rule };
+};
+
+/**
+ * Returns a subset of rules based on the user's current XP
+ */
+export const getRulesByXP = (xp: number): GameRule[] => {
+    if (xp >= 400) return RULE_POOL;
+
+    let allowedTypes: string[] = [];
+
+    if (xp < 50) {
+        allowedTypes = ['color', 'not_color'];
+    } else if (xp < 100) {
+        allowedTypes = ['shape', 'not_shape'];
+    } else if (xp < 150) {
+        allowedTypes = ['same_value', 'not_value'];
+    } else if (xp < 200) {
+        allowedTypes = ['same_shape_diff_color', 'same_color_diff_shape', 'same_shape_same_color'];
+    } else if (xp < 250) {
+        allowedTypes = ['same_color_diff_value', 'same_value_diff_color'];
+    } else if (xp < 300) {
+        allowedTypes = ['same_shape_diff_value', 'same_value_diff_shape'];
+    } else {
+        allowedTypes = [
+            'triple_match',
+            'same_color_same_shape_diff_value',
+            'same_shape_same_value_diff_color',
+            'same_color_same_value_diff_shape'
+        ];
+    }
+
+    return RULE_POOL.filter(rule => allowedTypes.includes(rule.matchType));
 };

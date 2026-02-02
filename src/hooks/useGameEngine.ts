@@ -42,9 +42,9 @@ export const useGameEngine = () => {
             setFeedback('incorrect');
             setStreak(0);
 
-            // Auto reset feedback after 1 second
+            // Auto start next round even on incorrect after 1 second
             setTimeout(() => {
-                setFeedback(null);
+                startNewRound();
             }, 1000);
         }
     };

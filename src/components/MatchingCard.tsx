@@ -25,7 +25,7 @@ const MatchingCard: React.FC<MatchingCardProps> = ({
         <div
             onClick={!isDisabled ? onClick : undefined}
             className={`
-        card-interactive h-full flex items-center justify-center p-6
+        card-interactive h-full flex items-center justify-center p-4
         ${isSelected ? 'card-selected' : ''}
         ${feedbackClass}
         ${isDisabled ? 'cursor-default' : 'cursor-pointer hover:shadow-lg'}

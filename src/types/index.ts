@@ -23,7 +23,7 @@ export interface ShapeAttributes {
 export interface GameRule {
     id: string;
     description: string;
-    matchType: 'color' | 'shape' | 'size' | 'pattern' | 'word' | 'not_color' | 'not_shape';
+    matchType: 'color' | 'shape' | 'size' | 'pattern' | 'word' | 'not_color' | 'not_shape' | 'same_shape_diff_color' | 'same_color_diff_shape';
 }
 
 export interface PuzzleRound {

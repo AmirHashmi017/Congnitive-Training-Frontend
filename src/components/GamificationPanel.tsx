@@ -10,15 +10,15 @@ interface GamificationPanelProps {
 
 const GamificationPanel: React.FC<GamificationPanelProps> = ({ streak, xp, difficulty, seeds }) => {
     return (
-        <div className="h-full bg-white border-l-2 border-gray-100 p-6 flex flex-col gap-8">
+        <div className="h-full min-h-0 bg-white p-6 flex flex-col gap-8">
             {/* Avatar Section */}
-            <div className="flex flex-col items-center gap-4 py-8">
-                <div className="w-32 h-32 bg-surface rounded-full flex items-center justify-center border-4 border-primary/20 shadow-inner">
-                    <User size={64} className="text-gray-300" />
+            <div className="flex flex-col items-center gap-4 py-6">
+                <div className="w-28 h-28 bg-surface rounded-full flex items-center justify-center border-4 border-primary/20 shadow-inner">
+                    <User size={56} className="text-gray-300" />
                 </div>
                 <div className="text-center">
-                    <h2 className="text-xl font-bold text-text">Trainee</h2>
-                    <p className="text-text-muted text-sm">Level {difficulty} Explorer</p>
+                    <h2 className="text-xl font-bold text-text uppercase tracking-tight">Trainee</h2>
+                    <p className="text-text-muted text-sm font-medium">Level {difficulty} Explorer</p>
                 </div>
             </div>
 
@@ -29,7 +29,7 @@ const GamificationPanel: React.FC<GamificationPanelProps> = ({ streak, xp, diffi
                         <div className="bg-primary/20 p-2 rounded-xl">
                             <Sprout className="text-primary" size={24} />
                         </div>
-                        <span className="font-bold text-text">Seeds</span>
+                        <span className="font-bold text-text uppercase text-xs tracking-wider">Seeds</span>
                     </div>
                     <span className="text-xl font-black text-primary">{seeds}</span>
                 </div>
@@ -39,7 +39,7 @@ const GamificationPanel: React.FC<GamificationPanelProps> = ({ streak, xp, diffi
                         <div className="bg-warning/20 p-2 rounded-xl">
                             <Flame className="text-warning" size={24} />
                         </div>
-                        <span className="font-bold text-text">Streak</span>
+                        <span className="font-bold text-text uppercase text-xs tracking-wider">Streak</span>
                     </div>
                     <span className="text-xl font-black text-warning">{streak}</span>
                 </div>
@@ -49,15 +49,15 @@ const GamificationPanel: React.FC<GamificationPanelProps> = ({ streak, xp, diffi
                         <div className="bg-secondary/20 p-2 rounded-xl">
                             <Trophy className="text-secondary" size={24} />
                         </div>
-                        <span className="font-bold text-text">XP</span>
+                        <span className="font-bold text-text uppercase text-xs tracking-wider">XP</span>
                     </div>
                     <span className="text-xl font-black text-secondary">{xp}</span>
                 </div>
             </div>
 
             {/* World Placeholder */}
-            <div className="mt-auto bg-green-50 rounded-3xl p-6 border-b-4 border-green-200 aspect-video flex items-center justify-center relative overflow-hidden">
-                <div className="text-center z-10">
+            <div className="mt-4 bg-green-50 rounded-3xl p-6 border-b-4 border-green-200 aspect-video flex items-center justify-center relative overflow-hidden max-h-[40vh]">
+                <div className="text-center z-10 -translate-y-2">
                     <p className="text-green-600 font-bold text-sm">Your Garden</p>
                     <p className="text-green-400 text-xs mt-1">Ready for growth</p>
                 </div>

@@ -24,6 +24,7 @@ export const ShapeFactory = {
             color: getRandomColor(),
             rotation: Math.floor(Math.random() * 360),
             size: 0.8 + Math.random() * 0.4, // size between 0.8 and 1.2
+            value: Math.floor(Math.random() * 9) + 1, // random value 1-9
         };
     },
 

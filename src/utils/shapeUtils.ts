@@ -39,6 +39,9 @@ export const getRandomColor = (): string => {
         '#ffc800', // Yellow
         '#ce82ff', // Purple
         '#ff9600', // Orange
+        '#ff89bb', // Pink
+        '#a05a2c', // Brown
+        '#545454', // Dark Grey
     ];
     return colors[Math.floor(Math.random() * colors.length)];
 };

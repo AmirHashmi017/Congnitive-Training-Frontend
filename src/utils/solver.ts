@@ -48,20 +48,17 @@ export const checkMatch = (target: ShapeAttributes, option: ShapeAttributes, rul
 export const RULE_POOL: GameRule[] = [
     { id: '1', description: 'Match the same color', matchType: 'color' },
     { id: '2', description: 'Match the same shape', matchType: 'shape' },
-    { id: '3', description: 'Find a DIFFERENT color', matchType: 'not_color' },
-    { id: '4', description: 'Find a DIFFERENT shape', matchType: 'not_shape' },
-    { id: '5', description: 'Same shape but different color', matchType: 'same_shape_diff_color' },
+    { id: '5', description: 'Same shape but not same color', matchType: 'same_shape_diff_color' },
     { id: '6', description: 'Same color but not same shape', matchType: 'same_color_diff_shape' },
     { id: '7', description: 'Identical: Same shape and color', matchType: 'same_shape_same_color' },
     { id: '8', description: 'Match the same number', matchType: 'same_value' },
-    { id: '17', description: 'Find a DIFFERENT number', matchType: 'not_value' },
-    { id: '9', description: 'Same color but different number', matchType: 'same_color_diff_value' },
-    { id: '10', description: 'Same number but different color', matchType: 'same_value_diff_color' },
-    { id: '11', description: 'Same shape but different number', matchType: 'same_shape_diff_value' },
-    { id: '12', description: 'Same number but different shape', matchType: 'same_value_diff_shape' },
-    { id: '13', description: 'Same color and shape but different number', matchType: 'same_color_same_shape_diff_value' },
-    { id: '14', description: 'Same shape and number but different color', matchType: 'same_shape_same_value_diff_color' },
-    { id: '15', description: 'Same color and number but different shape', matchType: 'same_color_same_value_diff_shape' },
+    { id: '9', description: 'Same color but not same number', matchType: 'same_color_diff_value' },
+    { id: '10', description: 'Same number but not same color', matchType: 'same_value_diff_color' },
+    { id: '11', description: 'Same shape but not same number', matchType: 'same_shape_diff_value' },
+    { id: '12', description: 'Same number but not same shape', matchType: 'same_value_diff_shape' },
+    { id: '13', description: 'Same color and shape but not same number', matchType: 'same_color_same_shape_diff_value' },
+    { id: '14', description: 'Same shape and number but not same color', matchType: 'same_shape_same_value_diff_color' },
+    { id: '15', description: 'Same color and number but not same shape', matchType: 'same_color_same_value_diff_shape' },
     { id: '16', description: 'Perfect Match: Shape, Color, and Number', matchType: 'triple_match' },
 ];
 
@@ -241,6 +238,7 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
     // 3. Post-process: Remove numeric values if they are not relevant to the rule
     const numericRules = [
         'same_value',
+        'not_value',
         'same_color_diff_value',
         'same_value_diff_color',
         'same_shape_diff_value',
@@ -253,8 +251,8 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
 
     if (!numericRules.includes(rule.matchType)) {
         // Strip values for display
-        delete target.value;
-        shuffled.forEach(opt => delete opt.value);
+        delete (target as any).value;
+        shuffled.forEach(opt => delete (opt as any).value);
     }
 
     return { target, options: shuffled, correctIndex, rule };
@@ -269,11 +267,11 @@ export const getRulesByXP = (xp: number): GameRule[] => {
     let allowedTypes: string[] = [];
 
     if (xp < 50) {
-        allowedTypes = ['color', 'not_color'];
+        allowedTypes = ['color'];
     } else if (xp < 100) {
-        allowedTypes = ['shape', 'not_shape'];
+        allowedTypes = ['shape'];
     } else if (xp < 150) {
-        allowedTypes = ['same_value', 'not_value'];
+        allowedTypes = ['same_value'];
     } else if (xp < 200) {
         allowedTypes = ['same_shape_diff_color', 'same_color_diff_shape', 'same_shape_same_color'];
     } else if (xp < 250) {

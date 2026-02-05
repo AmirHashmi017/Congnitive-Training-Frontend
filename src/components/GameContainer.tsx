@@ -4,21 +4,42 @@ import MatchingCard from './MatchingCard';
 import GamificationPanel from './GamificationPanel';
 import ShapeRenderer from './ShapeRenderer';
 import { HelpCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const GameContainer: React.FC = () => {
+    const navigate = useNavigate();
     const {
         round,
         streak,
         xp,
         difficulty,
+        seeds,
         feedback,
-        handleSelection
+        feedbackPhrase,
+        timer,
+        isGameActive,
+        handleSelection,
+        quitGame
     } = useGameEngine();
 
     if (!round) return <div>Loading...</div>;
 
     return (
-        <div className="flex flex-col md:flex-row h-screen w-screen bg-background overflow-hidden">
+        <div className="flex flex-col md:flex-row h-screen w-screen bg-background overflow-hidden relative">
+            {/* Feedback Overlay - Moved to top */}
+            {feedbackPhrase && (
+                <div className="absolute top-8 left-0 right-0 flex items-center justify-center z-50 pointer-events-none">
+                    <div className={`
+                        px-8 py-3 rounded-2xl shadow-xl border-4 transform animate-feedback
+                        ${feedback === 'correct' ? 'bg-primary border-primary-dark text-white' : 'bg-danger border-danger-dark text-white'}
+                    `}>
+                        <h3 className="text-xl md:text-2xl font-black uppercase tracking-wider">
+                            {feedbackPhrase}
+                        </h3>
+                    </div>
+                </div>
+            )}
+
             {/* Gameplay Area - 75% width */}
             <div className="w-full md:w-2/3 flex flex-col h-full p-4 md:p-6 lg:p-8 border-r-2 border-gray-50 min-h-0 shrink-0">
                 {/* Header / Rule Section */}
@@ -68,7 +89,13 @@ const GameContainer: React.FC = () => {
                     streak={streak}
                     xp={xp}
                     difficulty={difficulty}
-                    seeds={Math.floor(xp / 50)}
+                    seeds={seeds}
+                    timer={timer}
+                    onQuit={async () => {
+                        await quitGame();
+                        navigate('/dashboard');
+                    }}
+                    isGameActive={isGameActive}
                 />
             </div>
         </div>

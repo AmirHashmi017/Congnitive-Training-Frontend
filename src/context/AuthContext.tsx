@@ -18,7 +18,7 @@ interface User {
 interface AuthContextType {
     user: User | null;
     loading: boolean;
-    login: (username: string, password: string) => Promise<void>;
+    login: (username: string, password: string) => Promise<User>;
     signup: (username: string, password: string, avatar: string) => Promise<void>;
     logout: () => void;
     updateProfile: (data: { username?: string, avatar?: string }) => Promise<void>;
@@ -52,6 +52,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const { user, token } = response.data;
         localStorage.setItem('token', token);
         setUser(user);
+        return user;
     };
 
     const signup = async (username: string, password: string, avatar: string) => {

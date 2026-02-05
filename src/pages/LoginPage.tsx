@@ -15,8 +15,12 @@ const LoginPage: React.FC = () => {
         e.preventDefault();
         setError('');
         try {
-            await login(username, password);
-            navigate('/dashboard');
+            const user = await login(username, password);
+            if (user.role === 'admin') {
+                navigate('/admin');
+            } else {
+                navigate('/dashboard');
+            }
         } catch (err: any) {
             setError(err.response?.data?.error || 'Invalid username or password');
         }
@@ -43,7 +47,7 @@ const LoginPage: React.FC = () => {
                             type="text"
                             required
                             className="bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl focus:border-secondary focus:outline-none transition-all font-bold"
-                            
+
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                         />
@@ -56,7 +60,7 @@ const LoginPage: React.FC = () => {
                                 type={showPassword ? 'text' : 'password'}
                                 required
                                 className="bg-gray-50 border-2 border-gray-100 p-4 pr-12 rounded-2xl focus:border-secondary focus:outline-none transition-all font-bold w-full"
-                                
+
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />

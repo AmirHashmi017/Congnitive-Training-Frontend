@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useGameEngine } from '../hooks/useGameEngine';
 import MatchingCard from './MatchingCard';
 import GamificationPanel from './GamificationPanel';
 import ShapeRenderer from './ShapeRenderer';
-import { HelpCircle } from 'lucide-react';
+import { HelpCircle, Menu, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const GameContainer: React.FC = () => {
     const navigate = useNavigate();
+    const [isPanelOpen, setIsPanelOpen] = useState(false);
     const {
         round,
         streak,
@@ -26,9 +27,9 @@ const GameContainer: React.FC = () => {
 
     return (
         <div className="flex flex-col md:flex-row h-screen w-screen bg-background overflow-hidden relative">
-            {/* Feedback Overlay - Moved to top */}
+            {/* Feedback Overlay */}
             {feedbackPhrase && (
-                <div className="absolute top-8 left-0 right-0 flex items-center justify-center z-50 pointer-events-none">
+                <div className="absolute top-24 md:top-8 left-0 right-0 flex items-center justify-center z-[60] pointer-events-none">
                     <div className={`
                         px-8 py-3 rounded-2xl shadow-xl border-4 transform animate-feedback
                         ${feedback === 'correct' ? 'bg-primary border-primary-dark text-white' : 'bg-danger border-danger-dark text-white'}
@@ -40,10 +41,29 @@ const GameContainer: React.FC = () => {
                 </div>
             )}
 
-            {/* Gameplay Area - 75% width */}
-            <div className="w-full md:w-2/3 flex flex-col h-full p-4 md:p-6 lg:p-8 border-r-2 border-gray-50 min-h-0 shrink-0">
+            {/* Mobile Header with Hamburger - Always Visible */}
+            <div className="md:hidden fixed top-0 left-0 right-0 flex items-center justify-between p-4 bg-white border-b-2 border-gray-100 z-50">
+                <h1 className="text-lg font-black text-text uppercase tracking-tight">Matching Game</h1>
+                <button
+                    onClick={() => setIsPanelOpen(!isPanelOpen)}
+                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                    {isPanelOpen ? <X size={24} /> : <Menu size={24} />}
+                </button>
+            </div>
+
+            {/* Mobile Stats Overlay */}
+            {isPanelOpen && (
+                <div
+                    className="md:hidden fixed inset-0 bg-black/50 z-40"
+                    onClick={() => setIsPanelOpen(false)}
+                />
+            )}
+
+            {/* Gameplay Area */}
+            <div className="flex-1 md:w-2/3 flex flex-col h-full p-4 md:p-6 lg:p-8 md:border-r-2 border-gray-50 min-h-0 pt-20 md:pt-4">
                 {/* Header / Rule Section */}
-                <div className="w-full mb-4">
+                <div className="w-full mb-3">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="h-2 flex-1 bg-gray-100 rounded-full overflow-hidden">
                             <div
@@ -53,25 +73,25 @@ const GameContainer: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="bg-white border-2 border-gray-100 rounded-xl p-3 shadow-sm flex flex-col items-center gap-2 relative overflow-hidden">
+                    <div className="bg-white border-2 border-gray-100 rounded-xl p-2.5 shadow-sm flex flex-col items-center gap-2 relative overflow-hidden">
                         <div className="absolute top-2 left-2 text-secondary/5">
-                            <HelpCircle size={24} />
+                            <HelpCircle size={20} />
                         </div>
 
-                        <h2 className="text-base font-black text-text text-center uppercase tracking-tight">
+                        <h2 className="text-sm md:text-base font-black text-text text-center uppercase tracking-tight">
                             {round.rule.description}
                         </h2>
 
-                        <div className="w-14 h-14 bg-surface rounded-xl flex items-center justify-center border-2 border-gray-50 shadow-sm">
+                        <div className="w-12 h-12 bg-surface rounded-xl flex items-center justify-center border-2 border-gray-50 shadow-sm">
                             <ShapeRenderer attributes={round.target} />
                         </div>
                     </div>
                 </div>
 
-                {/* Matching Grid */}
-                <div className="w-full grid grid-cols-2 gap-4 flex-1 content-center overflow-hidden pb-2">
+                {/* Matching Grid - Packed rows at the top on mobile */}
+                <div className="w-full grid grid-cols-2 gap-3 md:gap-4 flex-1 content-start md:content-center overflow-hidden">
                     {round.options.map((option, index) => (
-                        <div key={index} className="aspect-square max-h-[120px] lg:max-h-[160px] mx-auto w-full">
+                        <div key={index} className="aspect-square max-h-[140px] md:max-h-[160px] mx-auto w-full">
                             <MatchingCard
                                 attributes={option}
                                 onClick={() => handleSelection(index)}
@@ -83,8 +103,14 @@ const GameContainer: React.FC = () => {
                 </div>
             </div>
 
-            {/* Gamification Panel - 25% width */}
-            <div className="w-full md:w-1/3 h-full shrink-0">
+            {/* Gamification Panel - Fixed on desktop, sliding on mobile */}
+            <div className={`
+                fixed md:static top-0 right-0 z-50
+                w-full md:w-1/3 bg-white
+                transform transition-transform duration-300 ease-in-out
+                ${isPanelOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}
+                h-screen
+            `}>
                 <GamificationPanel
                     streak={streak}
                     xp={xp}
@@ -95,6 +121,7 @@ const GameContainer: React.FC = () => {
                         await quitGame();
                         navigate('/dashboard');
                     }}
+                    onClose={() => setIsPanelOpen(false)}
                     isGameActive={isGameActive}
                 />
             </div>

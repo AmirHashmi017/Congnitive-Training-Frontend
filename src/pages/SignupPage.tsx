@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { User, Car, Flower2, Circle, Rabbit, BookOpen, Smile } from 'lucide-react';
+import { User, Car, Flower2, Circle, Rabbit, BookOpen, Smile, Eye, EyeOff } from 'lucide-react';
 
 const AVATARS = [
     { id: 'boy', name: 'Boy', Icon: User, color: 'text-blue-500' },
@@ -16,6 +16,7 @@ const AVATARS = [
 const SignupPage: React.FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [selectedAvatar, setSelectedAvatar] = useState('boy');
     const [error, setError] = useState('');
     const { signup } = useAuth();
@@ -33,47 +34,56 @@ const SignupPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-surface flex items-center justify-center p-4">
-            <div className="bg-white w-full max-w-md rounded-3xl shadow-xl p-8 border-2 border-gray-100">
-                <div className="text-center mb-8">
-                    <h1 className="text-3xl font-black text-text uppercase tracking-tight">Create Account</h1>
-                    <p className="text-text-muted font-medium pt-2">Join the learning journey!</p>
+        <div className="w-screen h-screen bg-surface flex items-center justify-center p-3">
+            <div className="bg-white w-full max-w-md rounded-3xl shadow-xl p-5 border-2 border-gray-100">
+                <div className="text-center mb-4">
+                    <h1 className="text-2xl font-black text-text uppercase tracking-tight">Create Account</h1>
+                    <p className="text-text-muted font-medium text-sm pt-1">Join the learning journey!</p>
                 </div>
 
                 {error && (
-                    <div className="mb-6 bg-danger/10 border-2 border-danger text-danger p-3 rounded-2xl text-center font-bold animate-shake">
+                    <div className="mb-3 bg-danger/10 border-2 border-danger text-danger p-2 rounded-xl text-center font-bold text-sm animate-shake">
                         {error}
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-                    <div className="flex flex-col gap-2">
-                        <label className="text-xs font-black text-text-muted uppercase tracking-widest px-2">User Name</label>
+                <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-1">
+                        <label className="text-[10px] font-black text-text-muted uppercase tracking-widest px-2">User Name</label>
                         <input
                             type="text"
                             required
-                            className="bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl focus:border-secondary focus:outline-none transition-all font-bold"
+                            className="bg-gray-50 border-2 border-gray-100 p-3 rounded-xl focus:border-secondary focus:outline-none transition-all font-bold text-sm"
                             placeholder="Enter unique username"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                         />
                     </div>
 
-                    <div className="flex flex-col gap-2">
-                        <label className="text-xs font-black text-text-muted uppercase tracking-widest px-2">Password</label>
-                        <input
-                            type="password"
-                            required
-                            className="bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl focus:border-secondary focus:outline-none transition-all font-bold"
-                            placeholder="Min 6 characters"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
+                    <div className="flex flex-col gap-1">
+                        <label className="text-[10px] font-black text-text-muted uppercase tracking-widest px-2">Password</label>
+                        <div className="relative">
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                required
+                                className="bg-gray-50 border-2 border-gray-100 p-3 pr-11 rounded-xl focus:border-secondary focus:outline-none transition-all font-bold w-full text-sm"
+                                placeholder="Enter Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text transition-colors"
+                            >
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
+                        </div>
                     </div>
 
-                    <div className="flex flex-col gap-4">
-                        <label className="text-xs font-black text-text-muted uppercase tracking-widest px-2 text-center">Choose Your Avatar</label>
-                        <div className="grid grid-cols-4 gap-3">
+                    <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-black text-text-muted uppercase tracking-widest px-2 text-center">Choose Your Avatar</label>
+                        <div className="grid grid-cols-4 gap-2">
                             {AVATARS.map((avatar) => {
                                 const Icon = avatar.Icon;
                                 return (
@@ -82,26 +92,26 @@ const SignupPage: React.FC = () => {
                                         type="button"
                                         onClick={() => setSelectedAvatar(avatar.id)}
                                         className={`
-                                            aspect-square flex flex-col items-center justify-center gap-1 rounded-2xl border-2 transition-all
+                                            h-20 flex flex-col items-center justify-center gap-1 rounded-xl border-2 transition-all
                                             ${selectedAvatar === avatar.id
                                                 ? 'border-secondary bg-secondary/10 scale-105'
                                                 : 'border-gray-100 hover:border-gray-200'}
                                         `}
                                     >
-                                        <Icon className={`${avatar.color}`} size={24} />
-                                        <span className="text-[10px] font-bold text-text uppercase tracking-tight">{avatar.name}</span>
+                                        <Icon className={`${avatar.color}`} size={28} />
+                                        <span className="text-[9px] font-bold text-text uppercase tracking-tight">{avatar.name}</span>
                                     </button>
                                 );
                             })}
                         </div>
                     </div>
 
-                    <button type="submit" className="btn-secondary w-full py-4 mt-4 text-xl tracking-wide uppercase">
+                    <button type="submit" className="btn-secondary w-full py-3 mt-2 text-lg tracking-wide uppercase">
                         Sign Up
                     </button>
                 </form>
 
-                <p className="text-center mt-8 text-text-muted font-bold">
+                <p className="text-center mt-4 text-text-muted font-bold text-sm">
                     Already have an account? <Link to="/login" className="text-secondary hover:underline">Log In</Link>
                 </p>
             </div>

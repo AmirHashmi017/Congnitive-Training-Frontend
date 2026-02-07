@@ -61,7 +61,6 @@ export const RULE_POOL: GameRule[] = [
     { id: '14', description: 'Same shape and number but not same color', matchType: 'same_shape_same_value_diff_color' },
     { id: '15', description: 'Same color and number but not same shape', matchType: 'same_color_same_value_diff_shape' },
     { id: '16', description: 'Perfect Match: Shape, Color, and Number', matchType: 'triple_match' },
-    // New Rules for Levels 8-11
     { id: '17', description: 'Find the described object', matchType: 'word_match' },
     { id: '18', description: 'Match the pattern', matchType: 'pattern_match' },
     { id: '19', description: 'Identify the object', matchType: 'object_id' },

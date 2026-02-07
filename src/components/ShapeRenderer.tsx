@@ -5,8 +5,7 @@ import {
     Car, Bird, Bus, Cat, Dog, Fish, PawPrint,
     Zap, Star, Heart, Cloud, Sun, Moon,
     Target, Award, Badge, Hexagon, Shield,
-    Apple, Banana, Cherry, Grape, Citrus,  // Lemon/Orange map to Citrus/etc? No, need specific
-    // Let's use generic lucide names
+    Apple, Banana, Cherry, Grape, Citrus,
     Book, Clock, Flower, House, Key, Pencil, Phone, Plane, Umbrella, Watch,
     Anchor, Aperture, Atom, Axe, Bell, Bomb, Bone, Camera, Cast,
     CircleDot, Compass, Crown, Diamond, Droplet, Eye, Feather, Flag, Flame, Flashlight,
@@ -20,13 +19,6 @@ interface ShapeRendererProps {
     width?: number | string;
     height?: number | string;
 }
-
-// Map for "lemon", "orange", "strawberry" which might not be in Lucide 
-// We will Map them to closest or remove from constants if not available.
-// Lucide has: Apple, Banana, Cherry, Grape, Citrus (use for lemon/orange)
-// Strawberry? No.
-// Ball? "Circle"?
-// Flower? "Flower" or "Flower2"?
 
 const ICON_MAP: Record<string, React.FC<any>> = {
     car: Car,
@@ -42,12 +34,12 @@ const ICON_MAP: Record<string, React.FC<any>> = {
     banana: Banana,
     cherry: Cherry,
     grape: Grape,
-    lemon: Citrus, // Approximate
-    orange: Citrus, // Approximate
-    strawberry: Cherry, // Fallback or remove? Let's use Cherry for now or remove from constants
+    lemon: Citrus,
+    orange: Citrus,
+    strawberry: Cherry,
 
     // Objects
-    ball: CircleDot, // Fallback
+    ball: CircleDot,
     book: Book,
     clock: Clock,
     cloud: Cloud,
@@ -128,12 +120,19 @@ const ShapeRenderer: React.FC<ShapeRendererProps> = ({
         transition: 'all 0.3s ease'
     };
 
-    // 1. TEXT RENDERER (Level 8 & 10 Options)
+    // 1. TEXT RENDERER (Level 8 & 10 Options) - IMPROVED
     if (type === 'text') {
         return (
             <div
-                className={`flex items-center justify-center font-black text-center select-none ${className}`}
-                style={{ ...containerStyle, fontSize: 'clamp(1rem, 2vw, 1.5rem)', color: color }}
+                className={`flex items-center justify-center font-black text-center select-none leading-tight ${className}`}
+                style={{ 
+                    ...containerStyle, 
+                    fontSize: 'clamp(0.875rem, 2.5vw, 1.25rem)', 
+                    color: color,
+                    wordBreak: 'break-word',
+                    hyphens: 'auto',
+                    padding: '0.25rem'
+                }}
             >
                 {contentValue || value}
             </div>
@@ -155,26 +154,28 @@ const ShapeRenderer: React.FC<ShapeRendererProps> = ({
         );
     }
 
-    // 3. PATTERN RENDERER (Level 9)
+    // 3. PATTERN RENDERER (Level 9) - COMPACT VERSION
     if (type === 'pattern') {
-        // If subShapes provided, use them (complex composition)
-        // If count provided, repeat the main shape attributes
-        const itemsToRender = subShapes || Array(count || 1).fill({ ...attributes, type: 'circle' }); // fallback
+        const itemsToRender = subShapes || Array(count || 1).fill({ ...attributes, type: 'circle' });
 
-        // Grid layout calculation based on count
+        // Compact grid layout - size based on number of items
         const gridCols = itemsToRender.length > 4 ? 3 : itemsToRender.length > 1 ? 2 : 1;
+        const itemSize = itemsToRender.length > 4 ? '1.5rem' : itemsToRender.length > 2 ? '1.75rem' : '2rem';
 
         return (
             <div
                 className={`grid gap-1 items-center justify-center ${className}`}
                 style={{
-                    ...containerStyle,
-                    gridTemplateColumns: `repeat(${gridCols}, 1fr)`,
-                    transform: 'scale(1)' // Reset scale for container, scale items instead? or keep?
+                    opacity,
+                    gridTemplateColumns: `repeat(${gridCols}, ${itemSize})`,
+                    transform: 'scale(1)',
+                    width: 'fit-content',
+                    height: 'fit-content',
+                    margin: 'auto'
                 }}
             >
                 {itemsToRender.map((attr, i) => (
-                    <div key={i} className="w-8 h-8 md:w-10 md:h-10">
+                    <div key={i} style={{ width: itemSize, height: itemSize }}>
                         <ShapeRenderer attributes={{ ...attr, type: attr.type || 'circle', size: 1 }} />
                     </div>
                 ))}

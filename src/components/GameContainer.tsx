@@ -14,7 +14,7 @@ const GameContainer: React.FC = () => {
         streak,
         xp,
         level,
-        levelProgress, // Added
+        levelProgress,
         seeds,
         feedback,
         feedbackPhrase,
@@ -74,30 +74,39 @@ const GameContainer: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="bg-white border-2 border-gray-100 rounded-xl p-2.5 shadow-sm flex flex-col items-center gap-2 relative overflow-hidden">
+                    <div className="bg-white border-2 border-gray-100 rounded-xl p-3 shadow-sm flex flex-col items-center gap-3 relative overflow-hidden">
                         <div className="absolute top-2 left-2 text-secondary/5">
                             <HelpCircle size={20} />
                         </div>
 
-                        <h2 className="text-sm md:text-base font-black text-text text-center uppercase tracking-tight">
+                        <h2 className="text-sm md:text-base font-black text-text text-center uppercase tracking-tight px-6 break-words w-full">
                             {round.rule.description}
                         </h2>
 
-                        <div className="w-12 h-12 bg-surface rounded-xl flex items-center justify-center border-2 border-gray-50 shadow-sm">
-                            <ShapeRenderer attributes={round.target} />
+                        <div className={`bg-surface rounded-xl flex items-center justify-center border-2 border-gray-50 shadow-sm ${
+                            round.target.type === 'pattern' ? 'w-full max-w-[200px] h-24 p-2' : 
+                            round.target.type === 'text' ? 'w-full max-w-md px-4 py-3 min-h-[60px]' : 
+                            'w-20 h-20'
+                        }`}>
+                            <ShapeRenderer 
+                                attributes={round.target}
+                                width={round.target.type === 'text' ? '100%' : round.target.type === 'pattern' ? '100%' : '100%'}
+                                height={round.target.type === 'text' ? 'auto' : round.target.type === 'pattern' ? '100%' : '100%'}
+                            />
                         </div>
                     </div>
                 </div>
 
                 {/* Matching Grid - Packed rows at the top on mobile */}
                 <div className={`
-                    w-full grid gap-3 md:gap-4 flex-1 content-start md:content-center overflow-auto
+                    w-full grid gap-3 md:gap-4 flex-1 content-start md:content-center
+                    ${round.type === 'pattern' ? 'overflow-visible' : 'overflow-auto'}
                     ${round.type === 'word' || round.type === 'object' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-2'}
                 `}>
                     {round.options.map((option, index) => (
                         <div key={index} className={`
                             mx-auto w-full
-                            ${round.type === 'pattern' ? 'aspect-video max-h-[180px] md:max-h-[220px]' : 'aspect-square max-h-[140px] md:max-h-[160px]'}
+                            ${round.type === 'pattern' ? 'h-auto max-h-[120px] md:max-h-[140px]' : 'aspect-square max-h-[140px] md:max-h-[160px]'}
                         `}>
                             <MatchingCard
                                 attributes={option}

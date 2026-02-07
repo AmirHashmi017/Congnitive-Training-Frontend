@@ -21,11 +21,14 @@ const MatchingCard: React.FC<MatchingCardProps> = ({
     if (feedback === 'correct') feedbackClass = "border-primary bg-primary/10 scale-105";
     if (feedback === 'incorrect') feedbackClass = "border-danger bg-danger/10 animate-shake";
 
+    // Determine padding based on type
+    const paddingClass = attributes.type === 'pattern' ? 'p-3' : 'p-4';
+
     return (
         <div
             onClick={!isDisabled ? onClick : undefined}
             className={`
-        card-interactive h-full flex items-center justify-center p-4
+        card-interactive h-full flex items-center justify-center ${paddingClass}
         ${isSelected ? 'card-selected' : ''}
         ${feedbackClass}
         ${isDisabled ? 'cursor-default' : 'cursor-pointer hover:shadow-lg'}
@@ -33,8 +36,8 @@ const MatchingCard: React.FC<MatchingCardProps> = ({
         >
             <ShapeRenderer
                 attributes={attributes}
-                width="80%"
-                height="80%"
+                width={attributes.type === 'pattern' ? '100%' : '80%'}
+                height={attributes.type === 'pattern' ? '100%' : '80%'}
             />
         </div>
     );

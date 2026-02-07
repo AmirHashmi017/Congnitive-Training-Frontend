@@ -211,7 +211,7 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
                 dCount = count === 2 ? 3 : 2;
             } else {
                 // Change shape + diff color
-                const newType = dBase.type; // already changed color above
+                // const newType = dBase.type; // already changed color above
                 // Ensure shape is also different from target if possible, or just rely on color
             }
 

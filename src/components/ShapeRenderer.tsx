@@ -5,7 +5,7 @@ import {
     Car, Bird, Bus, Cat, Dog, Fish, PawPrint,
     Zap, Star, Heart, Cloud, Sun, Moon,
     Target, Award, Badge, Hexagon, Shield,
-    Apple, Banana, Cherry, Grape, Citrus, Syringe, // Lemon/Orange map to Citrus/etc? No, need specific
+    Apple, Banana, Cherry, Grape, Citrus,  // Lemon/Orange map to Citrus/etc? No, need specific
     // Let's use generic lucide names
     Book, Clock, Flower, House, Key, Pencil, Phone, Plane, Umbrella, Watch,
     Anchor, Aperture, Atom, Axe, Bell, Bomb, Bone, Camera, Cast,

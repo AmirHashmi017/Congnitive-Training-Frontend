@@ -2,11 +2,12 @@ import React from 'react';
 import { Sprout, Flame, Trophy, User, LayoutDashboard, Car, Flower2, Circle, Rabbit, BookOpen, Smile, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { LEVEL_TITLES } from '../utils/constants';
 
 interface GamificationPanelProps {
     streak: number;
     xp: number;
-    difficulty: number;
+    level: number;
     seeds: number;
     timer: number;
     onQuit: () => void;
@@ -27,7 +28,7 @@ const AVATARS = [
 const GamificationPanel: React.FC<GamificationPanelProps> = ({
     streak,
     xp,
-    difficulty,
+    level,
     seeds,
     timer,
     onQuit,
@@ -81,7 +82,7 @@ const GamificationPanel: React.FC<GamificationPanelProps> = ({
                 </div>
                 <div className="text-center">
                     <h2 className="text-base font-bold text-text uppercase tracking-tight">{user?.username || 'Trainee'}</h2>
-                    <p className="text-text-muted text-xs font-medium">Level {difficulty} Explorer</p>
+                    <p className="text-text-muted text-xs font-medium">Level {level} {LEVEL_TITLES[level] || 'Explorer'}</p>
                 </div>
             </div>
 

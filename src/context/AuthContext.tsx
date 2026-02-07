@@ -11,6 +11,9 @@ interface User {
         seeds: number;
         streak: number;
         maxStreak: number;
+        level: number;
+        currentLevelProgress: number;
+        levelCorrectCount: number;
     };
     role: string;
 }

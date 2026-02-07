@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
+import { LEVEL_TITLES } from '../utils/constants';
 import {
     BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid
 } from 'recharts';
@@ -114,7 +115,7 @@ const UserDashboard: React.FC = () => {
                 ) : (
                     <div className="text-center">
                         <h2 className="text-xl font-black text-text uppercase tracking-tight">{user?.username}</h2>
-                        <p className="text-text-muted font-bold text-sm">Level {user?.stats.difficulty} Explorer</p>
+                        <p className="text-text-muted font-bold text-sm">Level {user?.stats.level} {LEVEL_TITLES[user?.stats.level || 1] || 'Explorer'}</p>
                     </div>
                 )}
             </div>

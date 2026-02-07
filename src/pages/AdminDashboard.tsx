@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
+import { LEVEL_TITLES } from '../utils/constants';
 import {
     Users, TrendingUp, History, LogOut, ChevronRight,
     Search, User as UserIcon,
@@ -171,7 +172,7 @@ const AdminDashboard: React.FC = () => {
                                 <div className="flex flex-col">
                                     <h1 className="text-3xl md:text-5xl font-black text-text uppercase tracking-tighter leading-none">{selectedUser.username}</h1>
                                     <p className="text-text-muted font-black uppercase tracking-widest text-xs md:text-sm mt-2 flex items-center gap-1">
-                                        <TrendingUp size={14} className="text-secondary" /> Level {selectedUser.stats.difficulty} Explorer
+                                        <TrendingUp size={14} className="text-secondary" /> Level {selectedUser.stats.level} {LEVEL_TITLES[selectedUser.stats.level] || 'Explorer'}
                                     </p>
                                 </div>
                             </div>

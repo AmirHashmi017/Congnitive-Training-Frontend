@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import type { PuzzleRound } from '../types';
-import { generatePuzzle, getRulesByXP } from '../utils/solver';
+import { generatePuzzle, getRulesByLevel } from '../utils/solver';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 
@@ -9,8 +9,13 @@ export const useGameEngine = () => {
     const [round, setRound] = useState<PuzzleRound | null>(null);
     const [streak, setStreak] = useState(user?.stats.streak || 0);
     const [xp, setXp] = useState(user?.stats.xp || 0);
-    const [difficulty, setDifficulty] = useState(user?.stats.difficulty || 1);
     const [seeds, setSeeds] = useState(user?.stats.seeds || 0);
+
+    // Level Based Stats
+    const [level, setLevel] = useState(user?.stats.level || 1);
+    const [levelProgress, setLevelProgress] = useState(user?.stats.currentLevelProgress || 0);
+    const [levelCorrectCount, setLevelCorrectCount] = useState(user?.stats.levelCorrectCount || 0);
+
     const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
     const [feedbackPhrase, setFeedbackPhrase] = useState<string | null>(null);
     const [timer, setTimer] = useState(0);
@@ -31,39 +36,49 @@ export const useGameEngine = () => {
         return () => window.clearInterval(interval);
     }, [isGameActive]);
 
-    // Use a ref to keep startNewRound stable and avoid accidental re-triggers when XP updates
-    const xpRef = useRef(xp);
+    // Use a ref to keep startNewRound stable and avoid accidental re-triggers
+    const levelRef = useRef(level);
     useEffect(() => {
-        xpRef.current = xp;
-    }, [xp]);
+        levelRef.current = level;
+    }, [level]);
 
     const startNewRound = useCallback(() => {
-        const availableRules = getRulesByXP(xpRef.current);
+        const availableRules = getRulesByLevel(levelRef.current);
         const rule = availableRules[Math.floor(Math.random() * availableRules.length)];
         const newPuzzle = generatePuzzle(rule);
 
         // Track unique modules used in this session
-        if (rule.matchType.includes('color')) modulesUsed.current.add('Module 1: Matching Game'); // Updated name for consistency
+        if (rule.matchType.includes('color')) modulesUsed.current.add('Module 1: Matching Game');
         if (rule.matchType.includes('shape')) modulesUsed.current.add('Module 2: Shapes');
         if (rule.matchType.includes('value')) modulesUsed.current.add('Module 3: Numeric');
 
         setRound(newPuzzle as any);
         setFeedback(null);
         setFeedbackPhrase(null);
-    }, []); // Identity is stable across XP updates
+    }, []);
 
     useEffect(() => {
         startNewRound();
     }, [startNewRound]);
 
     // Persistence Effect: Save stats to backend after every successful state change
-    const syncToBackend = async (currentXP: number, currentStreak: number, currentSeeds: number, currentDifficulty: number) => {
+    const syncToBackend = async (
+        currentXP: number,
+        currentStreak: number,
+        currentSeeds: number,
+        currentLevel: number,
+        currentProgress: number,
+        currentCorrect: number
+    ) => {
         try {
             const response = await api.post('/user/sync', {
                 xp: currentXP,
                 streak: currentStreak,
                 seeds: currentSeeds,
-                difficulty: currentDifficulty
+                difficulty: 1, // Deprecated but kept for schema compatibility or reset
+                level: currentLevel,
+                currentLevelProgress: currentProgress,
+                levelCorrectCount: currentCorrect
             });
             // Update global auth state instantly
             updateUser(response.data);
@@ -76,45 +91,82 @@ export const useGameEngine = () => {
         if (!round || feedback || !isGameActive) return;
 
         const correctPhrases = ["Great Job", "You are on a roll", "Keep it up", "You are awesome"];
-        const incorrectPhrases = ["That’s not right but try again", "Keep practicing"];
 
-        if (index === round.correctIndex) {
-            const nextXP = xp + 10 + (streak * 2);
-            const nextStreak = streak + 1;
-            const nextSeeds = seeds + (nextStreak % 5 === 0 ? 1 : 0);
-            let nextDifficulty = difficulty;
+        const isCorrect = index === round.correctIndex;
 
-            if (nextStreak % 5 === 0) {
-                nextDifficulty = Math.min(difficulty + 1, 10);
+        // Calculate new stats
+        const nextXP = isCorrect ? xp + 10 + (streak * 2) : xp;
+        const nextStreak = isCorrect ? streak + 1 : 0;
+
+        // Level Progression Logic
+        let nextLevel = level;
+        let nextProgress = levelProgress + 1;
+        let nextCorrectCount = levelCorrectCount + (isCorrect ? 1 : 0);
+        let levelUpOccurred = false;
+        let nextSeeds = seeds;
+
+        // Check if batch is complete (10 questions)
+        if (nextProgress >= 10) {
+            if (nextCorrectCount === 10) {
+                // Passed Level
+                levelUpOccurred = true;
+
+                // Cap at Level 12 (Infinity Level)
+                let newLevel = level + 1;
+                if (newLevel > 12) newLevel = 12;
+
+                // If already at 12, we stay at 12 but loop progress
+                if (level === 12) newLevel = 12;
+
+                nextLevel = newLevel;
+                // Seeds earned on level up or batch completion at max level
+                nextSeeds = seeds + 1;
             }
 
+            // Always reset progress after batch completion (win or lose)
+            nextProgress = 0;
+            nextCorrectCount = 0;
+
+            if (isCorrect) {
+                setFeedbackPhrase(levelUpOccurred ? "LEVEL UP!" : "Round Complete!");
+            }
+        }
+
+        // IMMEDIATE RESET ON ERROR (Strict Mode)
+        // User requested: "ehn we give any answer wrong that bar in green on top of question don't become empty again"
+        // This implies if they get one wrong, they lose the current progress of the batch.
+        if (!isCorrect) {
+            nextProgress = 0;
+            nextCorrectCount = 0;
+            // setFeedbackPhrase handled below
+        }
+
+        // Apply State Updates
+        if (isCorrect) {
             setFeedback('correct');
-            setFeedbackPhrase(correctPhrases[Math.floor(Math.random() * correctPhrases.length)]);
-            setStreak(nextStreak);
-            setXp(nextXP);
-            setSeeds(nextSeeds);
-            setDifficulty(nextDifficulty);
-
-            // Persist immediately
-            syncToBackend(nextXP, nextStreak, nextSeeds, nextDifficulty);
-
-            // Auto start next round after 1 second
-            setTimeout(() => {
-                if (isGameActive) startNewRound();
-            }, 1000);
+            // Only set random phrase if not Level Up (which sets it specific above)
+            if (nextProgress !== 0) { // If nextProgress is 0, it means a batch just completed or was reset, so phrase is already set
+                setFeedbackPhrase(correctPhrases[Math.floor(Math.random() * correctPhrases.length)]);
+            }
         } else {
             setFeedback('incorrect');
-            setFeedbackPhrase(incorrectPhrases[Math.floor(Math.random() * incorrectPhrases.length)]);
-            setStreak(0);
-
-            // Persist streak reset
-            syncToBackend(xp, 0, seeds, difficulty);
-
-            // Auto start next round even on incorrect after 1 second
-            setTimeout(() => {
-                if (isGameActive) startNewRound();
-            }, 1000);
+            setFeedbackPhrase("Incorrect. Progress Reset!");
         }
+
+        setStreak(nextStreak);
+        setXp(nextXP);
+        setSeeds(nextSeeds);
+        setLevel(nextLevel);
+        setLevelProgress(nextProgress);
+        setLevelCorrectCount(nextCorrectCount);
+
+        // Persist immediately
+        syncToBackend(nextXP, nextStreak, nextSeeds, nextLevel, nextProgress, nextCorrectCount);
+
+        // Auto start next round after delay
+        setTimeout(() => {
+            if (isGameActive) startNewRound();
+        }, 1500); // Slightly longer delay to see result
     };
 
     const quitGame = async () => {
@@ -135,8 +187,10 @@ export const useGameEngine = () => {
         round,
         streak,
         xp,
-        difficulty,
         seeds,
+        level,
+        levelProgress,
+        levelCorrectCount,
         feedback,
         feedbackPhrase,
         timer,

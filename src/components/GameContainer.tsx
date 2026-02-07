@@ -13,7 +13,8 @@ const GameContainer: React.FC = () => {
         round,
         streak,
         xp,
-        difficulty,
+        level,
+        levelProgress, // Added
         seeds,
         feedback,
         feedbackPhrase,
@@ -68,7 +69,7 @@ const GameContainer: React.FC = () => {
                         <div className="h-2 flex-1 bg-gray-100 rounded-full overflow-hidden">
                             <div
                                 className="h-full bg-primary transition-all duration-500"
-                                style={{ width: `${(streak % 5) * 20}%` }}
+                                style={{ width: `${Math.min((levelProgress || 0) * 10, 100)}%` }}
                             ></div>
                         </div>
                     </div>
@@ -89,9 +90,15 @@ const GameContainer: React.FC = () => {
                 </div>
 
                 {/* Matching Grid - Packed rows at the top on mobile */}
-                <div className="w-full grid grid-cols-2 gap-3 md:gap-4 flex-1 content-start md:content-center overflow-hidden">
+                <div className={`
+                    w-full grid gap-3 md:gap-4 flex-1 content-start md:content-center overflow-auto
+                    ${round.type === 'word' || round.type === 'object' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-2'}
+                `}>
                     {round.options.map((option, index) => (
-                        <div key={index} className="aspect-square max-h-[140px] md:max-h-[160px] mx-auto w-full">
+                        <div key={index} className={`
+                            mx-auto w-full
+                            ${round.type === 'pattern' ? 'aspect-video max-h-[180px] md:max-h-[220px]' : 'aspect-square max-h-[140px] md:max-h-[160px]'}
+                        `}>
                             <MatchingCard
                                 attributes={option}
                                 onClick={() => handleSelection(index)}
@@ -114,7 +121,7 @@ const GameContainer: React.FC = () => {
                 <GamificationPanel
                     streak={streak}
                     xp={xp}
-                    difficulty={difficulty}
+                    level={level}
                     seeds={seeds}
                     timer={timer}
                     onQuit={async () => {

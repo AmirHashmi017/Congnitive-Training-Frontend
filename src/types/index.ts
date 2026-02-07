@@ -8,7 +8,10 @@ export type ShapeType =
     | 'pentagon'
     | 'octagon'
     | 'star'
-    | 'blob';
+    | 'blob'
+    | 'text' // For Level 8 (Instruction) & Level 10 (Answer Options)
+    | 'icon' // For Level 10 (Target) & Level 11
+    | 'pattern'; // For Level 9
 
 export interface ShapeAttributes {
     type: ShapeType;
@@ -19,6 +22,11 @@ export interface ShapeAttributes {
     strokeWidth?: number;
     pattern?: string;
     opacity?: number;
+    // New properties for advanced levels
+    contentValue?: string; // For 'text' type (e.g., "Blue Circle") or 'icon' name
+    iconName?: string; // Specific icon identifier for 'icon' type (e.g., 'bird', 'car')
+    subShapes?: ShapeAttributes[]; // For 'pattern' type (composition of shapes)
+    count?: number; // For 'pattern' type (e.g., 2 Circles)
 }
 
 export interface GameRule {
@@ -28,8 +36,8 @@ export interface GameRule {
     | 'color'
     | 'shape'
     | 'size'
-    | 'pattern'
-    | 'word'
+    | 'pattern' // Level 9
+    | 'word' // Level 8
     | 'not_color'
     | 'not_shape'
     | 'same_shape_diff_color'
@@ -44,7 +52,11 @@ export interface GameRule {
     | 'same_color_same_shape_diff_value'
     | 'same_shape_same_value_diff_color'
     | 'same_color_same_value_diff_shape'
-    | 'triple_match'; // same shape, color, and value
+    | 'triple_match' // same shape, color, and value
+    | 'word_match' // Level 8 specific
+    | 'pattern_match' // Level 9 specific
+    | 'object_id' // Level 10 specific
+    | 'complex_match'; // Level 11 specific
 }
 
 export interface PuzzleRound {
@@ -52,4 +64,5 @@ export interface PuzzleRound {
     options: ShapeAttributes[];
     correctIndex: number;
     rule: GameRule;
+    type?: 'standard' | 'word' | 'pattern' | 'object' | 'complex'; // To help UI rendering
 }

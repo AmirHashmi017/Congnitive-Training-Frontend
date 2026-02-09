@@ -11,7 +11,12 @@ export type ShapeType =
     | 'blob'
     | 'text' // For Level 8 (Instruction) & Level 10 (Answer Options)
     | 'icon' // For Level 10 (Target) & Level 11
-    | 'pattern'; // For Level 9
+    | 'pattern' // For Level 9
+    | 'irregular_l' // For Level 12 - L-shaped polygon
+    | 'irregular_arrow' // For Level 12 - Arrow-like shape
+    | 'irregular_zigzag' // For Level 12 - Zigzag pattern
+    | 'irregular_step' // For Level 12 - Step-like shape
+    | 'irregular_cross'; // For Level 12 - Cross/plus shape
 
 export interface ShapeAttributes {
     type: ShapeType;
@@ -27,6 +32,7 @@ export interface ShapeAttributes {
     iconName?: string; // Specific icon identifier for 'icon' type (e.g., 'bird', 'car')
     subShapes?: ShapeAttributes[]; // For 'pattern' type (composition of shapes)
     count?: number; // For 'pattern' type (e.g., 2 Circles)
+    innerPattern?: string; // For complex shapes: variation in dots/rings ('1-dot', '2-dots', '3-dots', 'thick-ring', 'thin-ring')
 }
 
 export interface GameRule {
@@ -56,7 +62,9 @@ export interface GameRule {
     | 'word_match' // Level 8 specific
     | 'pattern_match' // Level 9 specific
     | 'object_id' // Level 10 specific
-    | 'complex_match'; // Level 11 specific
+    | 'complex_match' // Level 11 specific
+    | 'simple_word_match' // Level 2 specific
+    | 'irregular_shape_match'; // Level 12 specific
 }
 
 export interface PuzzleRound {

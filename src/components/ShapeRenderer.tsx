@@ -139,17 +139,113 @@ const ShapeRenderer: React.FC<ShapeRendererProps> = ({
         );
     }
 
-    // 2. ICON RENDERER (Level 10 Target & Level 11)
+    // 2. ICON RENDERER (Level 10 Target & Level 11) - WITH INNER PATTERN VARIATIONS
     if (type === 'icon') {
         const IconComponent = ICON_MAP[iconName?.toLowerCase() || ''] || Star;
+        
         return (
-            <div className={`flex items-center justify-center ${className}`} style={containerStyle}>
-                <IconComponent
-                    size="100%"
-                    color={color}
-                    style={{ transform: `rotate(${rotation}deg)` }}
-                    strokeWidth={attributes.strokeWidth || 2}
-                />
+            <div className={`flex items-center justify-center relative ${className}`} style={containerStyle}>
+                {/* Main icon */}
+                <div className="relative w-full h-full flex items-center justify-center">
+                    <IconComponent
+                        size="70%"
+                        color={color}
+                        style={{ transform: `rotate(${rotation}deg)` }}
+                        strokeWidth={attributes.strokeWidth || 2}
+                    />
+                    
+                    {/* Inner pattern variations */}
+                    {attributes.innerPattern && (
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            {attributes.innerPattern === '1-dot' && (
+                                <div
+                                    style={{
+                                        width: '8px',
+                                        height: '8px',
+                                        borderRadius: '50%',
+                                        backgroundColor: color,
+                                        opacity: 0.8
+                                    }}
+                                />
+                            )}
+                            {attributes.innerPattern === '2-dots' && (
+                                <div className="flex gap-2">
+                                    <div
+                                        style={{
+                                            width: '6px',
+                                            height: '6px',
+                                            borderRadius: '50%',
+                                            backgroundColor: color,
+                                            opacity: 0.8
+                                        }}
+                                    />
+                                    <div
+                                        style={{
+                                            width: '6px',
+                                            height: '6px',
+                                            borderRadius: '50%',
+                                            backgroundColor: color,
+                                            opacity: 0.8
+                                        }}
+                                    />
+                                </div>
+                            )}
+                            {attributes.innerPattern === '3-dots' && (
+                                <div className="flex gap-1.5">
+                                    <div
+                                        style={{
+                                            width: '5px',
+                                            height: '5px',
+                                            borderRadius: '50%',
+                                            backgroundColor: color,
+                                            opacity: 0.8
+                                        }}
+                                    />
+                                    <div
+                                        style={{
+                                            width: '5px',
+                                            height: '5px',
+                                            borderRadius: '50%',
+                                            backgroundColor: color,
+                                            opacity: 0.8
+                                        }}
+                                    />
+                                    <div
+                                        style={{
+                                            width: '5px',
+                                            height: '5px',
+                                            borderRadius: '50%',
+                                            backgroundColor: color,
+                                            opacity: 0.8
+                                        }}
+                                    />
+                                </div>
+                            )}
+                            {attributes.innerPattern === 'thick-ring' && (
+                                <div
+                                    style={{
+                                        width: '20px',
+                                        height: '20px',
+                                        border: `3px solid ${color}`,
+                                        borderRadius: '50%',
+                                        opacity: 0.8
+                                    }}
+                                />
+                            )}
+                            {attributes.innerPattern === 'thin-ring' && (
+                                <div
+                                    style={{
+                                        width: '18px',
+                                        height: '18px',
+                                        border: `1px solid ${color}`,
+                                        borderRadius: '50%',
+                                        opacity: 0.8
+                                    }}
+                                />
+                            )}
+                        </div>
+                    )}
+                </div>
             </div>
         );
     }

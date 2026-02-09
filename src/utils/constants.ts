@@ -1,16 +1,17 @@
 export const LEVEL_TITLES: Record<number, string> = {
     1: 'Observer',
-    2: 'Shaper',
-    3: 'Counter',
-    4: 'Dualist',
-    5: 'Spectrum',
-    6: 'Morpher',
-    7: 'Mastermind',
-    8: 'Specialist', // Complex Icon
-    9: 'Linguist',   // Word Match
-    10: 'Patternist', // Pattern Match
-    11: 'Visionary',  // Object ID
-    12: 'Infinity'    // Random Mix
+    2: 'Simple Linguist',
+    3: 'Shaper',
+    4: 'Counter',
+    5: 'Visionary',
+    6: 'Dualist',
+    7: 'Spectrum',
+    8: 'Morpher',
+    9: 'Mastermind',
+    10: 'Specialist',
+    11: 'Patternist',
+    12: 'Irregular Shapes',
+    13: 'Infinity'
 };
 
 export const OBJECT_ICONS = [

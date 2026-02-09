@@ -23,6 +23,21 @@ export const getShapePath = (attributes: ShapeAttributes): string => {
             return 'M 50,5 L 94,37 L 77,90 L 23,90 L 6,37 Z';
         case 'star':
             return 'M 50,5 L 63,38 L 98,38 L 70,59 L 81,92 L 50,72 L 19,92 L 30,59 L 2,38 L 37,38 Z';
+        case 'irregular_l':
+            // L-shaped polygon
+            return 'M 20,10 L 50,10 L 50,50 L 90,50 L 90,90 L 20,90 Z';
+        case 'irregular_arrow':
+            // Arrow pointing right
+            return 'M 10,35 L 60,35 L 60,10 L 95,50 L 60,90 L 60,65 L 10,65 Z';
+        case 'irregular_zigzag':
+            // Zigzag pattern
+            return 'M 10,50 L 30,20 L 50,50 L 70,20 L 90,50 L 70,80 L 50,50 L 30,80 Z';
+        case 'irregular_step':
+            // Step-like shape
+            return 'M 10,70 L 30,70 L 30,50 L 50,50 L 50,30 L 70,30 L 70,10 L 90,10 L 90,90 L 10,90 Z';
+        case 'irregular_cross':
+            // Cross/plus shape with irregular arms
+            return 'M 35,10 L 65,10 L 65,35 L 90,35 L 90,65 L 65,65 L 65,90 L 35,90 L 35,65 L 10,65 L 10,35 L 35,35 Z';
         default:
             return 'M 10,10 H 90 V 90 H 10 Z'; // Fallback to square
     }

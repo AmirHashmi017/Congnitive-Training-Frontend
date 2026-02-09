@@ -11,6 +11,14 @@ const SHAPE_TYPES: ShapeType[] = [
     'star'
 ];
 
+const IRREGULAR_SHAPE_TYPES: ShapeType[] = [
+    'irregular_l',
+    'irregular_arrow',
+    'irregular_zigzag',
+    'irregular_step',
+    'irregular_cross'
+];
+
 /**
  * Factory class to generate procedural shapes
  */
@@ -35,6 +43,19 @@ export const ShapeFactory = {
         return {
             ...this.generateRandomShape(),
             ...overrides
+        };
+    },
+
+    /**
+     * Generates a random irregular shape (for Level 12)
+     */
+    generateRandomIrregularShape(): ShapeAttributes {
+        const rotations = [0, 90, 180, 270];
+        return {
+            type: IRREGULAR_SHAPE_TYPES[Math.floor(Math.random() * IRREGULAR_SHAPE_TYPES.length)],
+            color: getRandomColor(),
+            rotation: rotations[Math.floor(Math.random() * rotations.length)],
+            size: 0.9 + Math.random() * 0.2, // size between 0.9 and 1.1
         };
     }
 };

@@ -111,12 +111,12 @@ export const useGameEngine = () => {
                 // Passed Level
                 levelUpOccurred = true;
 
-                // Cap at Level 12 (Infinity Level)
+                // Cap at Level 13 (Infinity Level)
                 let newLevel = level + 1;
-                if (newLevel > 12) newLevel = 12;
+                if (newLevel > 13) newLevel = 13;
 
-                // If already at 12, we stay at 12 but loop progress
-                if (level === 12) newLevel = 12;
+                // If already at 13, we stay at 13 but loop progress
+                if (level === 13) newLevel = 13;
 
                 nextLevel = newLevel;
                 // Seeds earned on level up or batch completion at max level

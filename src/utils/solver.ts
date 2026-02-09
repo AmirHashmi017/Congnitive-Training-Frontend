@@ -1,6 +1,6 @@
 import type { ShapeAttributes, GameRule } from '../types';
 import { ShapeFactory } from './shapeFactory';
-import { OBJECT_ICONS, COMPLEX_ICONS } from './constants';
+import { OBJECT_ICONS } from './constants';
 
 /**
  * Validates if an option matches the target based on a specific rule

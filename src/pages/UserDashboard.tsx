@@ -145,7 +145,7 @@ const UserDashboard: React.FC = () => {
 
     return (
         <div className="h-screen w-screen flex flex-col md:flex-row overflow-hidden bg-gray-50">
-          
+
             <div className="md:hidden flex items-center justify-between p-4 bg-white border-b-2 border-gray-100">
                 <h1 className="text-xl font-black text-text uppercase tracking-tight">Dashboard</h1>
                 <button
@@ -156,7 +156,7 @@ const UserDashboard: React.FC = () => {
                 </button>
             </div>
 
-            
+
             {isSidebarOpen && (
                 <div
                     className="md:hidden fixed inset-0 bg-black/50 z-40"
@@ -164,7 +164,7 @@ const UserDashboard: React.FC = () => {
                 />
             )}
 
-            
+
             <div className={`
                 fixed md:static inset-y-0 left-0 z-50
                 w-80 bg-white border-r-2 border-gray-100 
@@ -176,10 +176,10 @@ const UserDashboard: React.FC = () => {
                 <SidebarContent />
             </div>
 
-           
+
             <div className="flex-1 h-screen overflow-y-auto p-4 md:p-6">
                 <div className="max-w-5xl mx-auto space-y-6">
-                    
+
                     <div className="hidden md:block">
                         <h1 className="text-3xl font-black text-text uppercase tracking-tighter">Your Progress</h1>
                         <p className="text-text-muted font-medium text-sm pt-1">Visualize your cognitive growth and session history.</p>
@@ -217,7 +217,7 @@ const UserDashboard: React.FC = () => {
                             </div>
 
                             <button
-                                onClick={() => navigate('/')}
+                                onClick={() => navigate('/play')}
                                 className="w-full bg-secondary text-white py-3 rounded-xl font-black uppercase tracking-widest text-sm shadow-[0_3px_0_0_#1899d6] active:translate-y-1 active:shadow-none transition-all"
                             >
                                 Play Module 1
@@ -233,7 +233,7 @@ const UserDashboard: React.FC = () => {
                         </div>
                     </div>
 
-                    
+
                     <div className="bg-white p-4 rounded-2xl border-2 border-gray-100 shadow-sm">
                         <div className="flex items-center gap-2 mb-4">
                             <BarChart3 className="text-secondary" size={20} />
@@ -255,7 +255,7 @@ const UserDashboard: React.FC = () => {
                         </div>
                     </div>
 
-                   
+
                     <div className="bg-white rounded-2xl border-2 border-gray-100 shadow-sm overflow-hidden">
                         <div className="p-4 border-b-2 border-gray-50 flex items-center justify-between">
                             <div className="flex items-center gap-2">

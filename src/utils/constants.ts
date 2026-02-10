@@ -9,8 +9,8 @@ export const LEVEL_TITLES: Record<number, string> = {
     8: 'Morpher',
     9: 'Mastermind',
     10: 'Specialist',
-    11: 'Patternist',
-    12: 'Irregular Shapes',
+    11: 'Irregular Shapes',
+    12: 'Patternist',
     13: 'Infinity'
 };
 

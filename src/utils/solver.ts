@@ -319,7 +319,7 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
             color: correctColor,
             rotation: correctRotation,
             size: 0.9 + Math.random() * 0.2,
-            strokeStyle: targetStyle // CRITICAL: Same style as target
+            strokeStyle: targetStyle 
         } as any;
 
         const options = [correctOption];
@@ -427,7 +427,7 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
         return { target, options: shuffled, correctIndex: correctIdx, rule, type: 'object' };
     }
 
-    // --- STANDARD LEVELS (1-7) ---
+    
     const target = ShapeFactory.generateRandomShape();
     let correctOption: ShapeAttributes;
 
@@ -651,13 +651,21 @@ export const getRulesByLevel = (level: number): GameRule[] => {
             allowedTypes = ['complex_match'];
             break;
         case 11: 
-            allowedTypes = ['pattern_match'];
-            break;
-        case 12: 
             allowedTypes = ['irregular_shape_match'];
             break;
+        case 12: 
+            allowedTypes = ['pattern_match'];
+            break;
         case 13: 
-            allowedTypes = RULE_POOL.map(r => r.matchType);
+            allowedTypes = [
+                'complex_match',
+                'irregular_shape_match',
+                'pattern_match',
+                'triple_match',
+                'same_color_same_shape_diff_value',
+                'same_shape_same_value_diff_color',
+                'same_color_same_value_diff_shape'
+            ];
             break;
         default:
             allowedTypes = RULE_POOL.map(r => r.matchType);

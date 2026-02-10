@@ -120,7 +120,6 @@ const ShapeRenderer: React.FC<ShapeRendererProps> = ({
         transition: 'all 0.3s ease'
     };
 
-    // 1. TEXT RENDERER (Level 8 & 10 Options) - IMPROVED
     if (type === 'text') {
         return (
             <div
@@ -139,7 +138,6 @@ const ShapeRenderer: React.FC<ShapeRendererProps> = ({
         );
     }
 
-    // 2. ICON RENDERER (Level 10 Target & Level 11) - WITH INNER PATTERN VARIATIONS
     if (type === 'icon') {
         const IconComponent = ICON_MAP[iconName?.toLowerCase() || ''] || Star;
         
@@ -250,11 +248,10 @@ const ShapeRenderer: React.FC<ShapeRendererProps> = ({
         );
     }
 
-    // 3. PATTERN RENDERER (Level 9) - COMPACT VERSION
     if (type === 'pattern') {
         const itemsToRender = subShapes || Array(count || 1).fill({ ...attributes, type: 'circle' });
 
-        // Compact grid layout - size based on number of items
+        
         const gridCols = itemsToRender.length > 4 ? 3 : itemsToRender.length > 1 ? 2 : 1;
         const itemSize = itemsToRender.length > 4 ? '1.5rem' : itemsToRender.length > 2 ? '1.75rem' : '2rem';
 
@@ -279,7 +276,44 @@ const ShapeRenderer: React.FC<ShapeRendererProps> = ({
         );
     }
 
-    // 4. STANDARD SHAPE RENDERER (Levels 1-7)
+    const strokeStyle = (attributes as any).strokeStyle || 'filled';
+    const isIrregularShape = type.startsWith('irregular_');
+    
+    let fillColor = color;
+    let strokeColor = 'rgba(0,0,0,0.1)';
+    let strokeWidth = 2;
+    let strokeDasharray = 'none';
+    
+    if (isIrregularShape) {
+        switch (strokeStyle) {
+            case 'filled':
+                
+                fillColor = color;
+                strokeColor = 'rgba(0,0,0,0.15)';
+                strokeWidth = 2;
+                break;
+            case 'outlined':
+                
+                fillColor = 'none';
+                strokeColor = color;
+                strokeWidth = 4;
+                break;
+            case 'dotted':
+                
+                fillColor = 'none';
+                strokeColor = color;
+                strokeWidth = 3;
+                strokeDasharray = '2,4';
+                break;
+            case 'thick':
+                
+                fillColor = color;
+                strokeColor = color;
+                strokeWidth = 6;
+                break;
+        }
+    }
+    
     return (
         <svg
             viewBox="0 0 100 100"
@@ -293,9 +327,10 @@ const ShapeRenderer: React.FC<ShapeRendererProps> = ({
         >
             <path
                 d={getShapePath(attributes)}
-                fill={color}
-                stroke="rgba(0,0,0,0.1)"
-                strokeWidth="2"
+                fill={fillColor}
+                stroke={strokeColor}
+                strokeWidth={strokeWidth}
+                strokeDasharray={strokeDasharray}
                 className="transition-all duration-300"
                 style={{
                     transform: `rotate(${rotation}deg)`,

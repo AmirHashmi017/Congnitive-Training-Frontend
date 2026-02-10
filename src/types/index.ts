@@ -33,6 +33,7 @@ export interface ShapeAttributes {
     subShapes?: ShapeAttributes[]; // For 'pattern' type (composition of shapes)
     count?: number; // For 'pattern' type (e.g., 2 Circles)
     innerPattern?: string; // For complex shapes: variation in dots/rings ('1-dot', '2-dots', '3-dots', 'thick-ring', 'thin-ring')
+    strokeStyle?: 'filled' | 'outlined' | 'dotted' | 'thick'; // For Level 12 irregular shapes - visual style variation
 }
 
 export interface GameRule {

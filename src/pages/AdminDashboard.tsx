@@ -58,7 +58,7 @@ const AdminDashboard: React.FC = () => {
     const handleUserClick = (user: any) => {
         setSelectedUser(user);
         fetchUserHistory(user._id);
-        setIsSidebarOpen(false); // Close sidebar on mobile if open
+        setIsSidebarOpen(false); 
     };
 
     const formatDuration = (seconds: number) => {
@@ -121,7 +121,7 @@ const AdminDashboard: React.FC = () => {
                 </button>
             </div>
 
-            {/* Sidebar - User List */}
+            
             <div className={`
                 fixed md:static inset-y-0 left-0 z-40
                 w-80 bg-white border-r-2 border-gray-100 
@@ -157,7 +157,7 @@ const AdminDashboard: React.FC = () => {
                 </button>
             </div>
 
-            {/* Main Content Area */}
+            
             <div className="flex-1 h-screen overflow-y-auto p-4 md:p-10">
                 {selectedUser ? (
                     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4">
@@ -193,7 +193,7 @@ const AdminDashboard: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* Recent Performance Chart */}
+                        
                         <div className="bg-white p-6 rounded-3xl border-2 border-gray-100 shadow-sm">
                             <h3 className="font-black text-text tracking-widest uppercase text-xs mb-6 flex items-center gap-2">
                                 <BarChart3 className="text-secondary" size={16} /> Performance Trend (Last 7 Sessions)
@@ -214,7 +214,7 @@ const AdminDashboard: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* History Table */}
+                        
                         <div className="bg-white rounded-3xl border-2 border-gray-100 shadow-sm overflow-hidden">
                             <div className="p-4 border-b-2 border-gray-50">
                                 <h3 className="font-black text-text tracking-widest uppercase text-xs flex items-center gap-2">

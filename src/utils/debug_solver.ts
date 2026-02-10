@@ -20,7 +20,7 @@ const runTest = () => {
         console.log(`Correct Index: ${puzzle.correctIndex}`);
         console.log(`Option at CorrectIndex: ${correctOpt.contentValue}`);
 
-        // Verify match
+  
         const iconName = puzzle.target.iconName || '';
         const expectedValue = iconName.charAt(0).toUpperCase() + iconName.slice(1);
         if (correctOpt.contentValue === expectedValue) {

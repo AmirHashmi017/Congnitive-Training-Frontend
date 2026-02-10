@@ -86,9 +86,9 @@ const GamificationPanel: React.FC<GamificationPanelProps> = ({
                 </div>
             </div>
 
-            {/* Stats Section - Three Separate Cards in One Row like Module 1 */}
+            
             <div className="grid grid-cols-3 gap-2 shrink-0">
-                {/* Seeds Card */}
+               
                 <div className="bg-white rounded-xl border-2 border-gray-100 shadow-sm p-2 flex flex-col items-center justify-center">
                     <div className="bg-primary/10 p-2 rounded-lg mb-1">
                         <Sprout className="text-primary" size={16} />
@@ -97,7 +97,7 @@ const GamificationPanel: React.FC<GamificationPanelProps> = ({
                     <span className="text-lg font-black text-primary">{seeds}</span>
                 </div>
 
-                {/* Streak Card */}
+               
                 <div className="bg-white rounded-xl border-2 border-gray-100 shadow-sm p-2 flex flex-col items-center justify-center">
                     <div className="bg-warning/10 p-2 rounded-lg mb-1">
                         <Flame className="text-warning" size={16} />
@@ -106,7 +106,7 @@ const GamificationPanel: React.FC<GamificationPanelProps> = ({
                     <span className="text-lg font-black text-warning">{streak}</span>
                 </div>
 
-                {/* XP Card */}
+                
                 <div className="bg-white rounded-xl border-2 border-gray-100 shadow-sm p-2 flex flex-col items-center justify-center">
                     <div className="bg-secondary/10 p-2 rounded-lg mb-1">
                         <Trophy className="text-secondary" size={16} />
@@ -116,19 +116,19 @@ const GamificationPanel: React.FC<GamificationPanelProps> = ({
                 </div>
             </div>
 
-            {/* World Placeholder */}
+           
             <div className="flex-1 bg-green-50 rounded-3xl p-6 border-b-4 border-green-200 flex items-center justify-center relative overflow-hidden min-h-0">
                 <div className="text-center z-10 -translate-y-2">
                     <p className="text-green-600 font-bold text-sm">Your Garden</p>
                     <p className="text-green-400 text-xs mt-1">Ready for growth</p>
                 </div>
-                {/* Simple decorative elements */}
+                
                 <div className="absolute bottom-0 right-0 p-2 opacity-20">
                     <Sprout size={48} className="text-green-500" />
                 </div>
             </div>
 
-            {/* Action Buttons */}
+            
             <div className="pt-2 flex flex-col gap-3 shrink-0">
                 {!isGameActive && (
                     <div className="bg-red-50 text-red-600 p-3 rounded-2xl text-center font-bold text-sm animate-feedback">

@@ -1,1 +1,1 @@
-## Cognitive Training Frontend
+## Cognitive Training Front-end

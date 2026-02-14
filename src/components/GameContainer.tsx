@@ -96,6 +96,7 @@ const GameContainer: React.FC = () => {
                 </div>
 
 
+                {/* FIXED: Better iPad Pro responsive grid with proper min/max heights and overflow control */}
                 <div className={`
                     w-full grid gap-3 md:gap-4 flex-1 content-start md:content-center
                     ${round.type === 'pattern' ? 'overflow-visible' : 'overflow-auto'}
@@ -104,7 +105,9 @@ const GameContainer: React.FC = () => {
                     {round.options.map((option, index) => (
                         <div key={index} className={`
                             mx-auto w-full
-                            ${round.type === 'pattern' ? 'h-auto max-h-[120px] md:max-h-[140px]' : 'aspect-square max-h-[140px] md:max-h-[160px]'}
+                            ${round.type === 'pattern' 
+                                ? 'h-auto min-h-[110px] max-h-[160px]' 
+                                : 'aspect-square min-h-[130px] max-h-[200px]'}
                         `}>
                             <MatchingCard
                                 attributes={option}

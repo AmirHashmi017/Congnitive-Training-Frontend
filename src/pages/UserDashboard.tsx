@@ -113,7 +113,7 @@ const UserDashboard: React.FC = () => {
                     </div>
                 ) : (
                     <div className="text-center">
-                        <h2 className="text-xl font-black text-text uppercase tracking-tight">{user?.username}</h2>
+                        <h2 className="text-xl font-black text-text tracking-tight">{user?.username}</h2>
                         <p className="text-text-muted font-bold text-sm">Level {user?.stats.level} {LEVEL_TITLES[user?.stats.level || 1] || 'Explorer'}</p>
                     </div>
                 )}

@@ -44,11 +44,13 @@ export const checkMatch = (target: ShapeAttributes, option: ShapeAttributes, rul
 
             return target.contentValue?.includes(getColorName(option.color)) || false;
         case 'complex_match':
-
-            return target.iconName === option.iconName && target.innerPattern === option.innerPattern;
+            return target.iconName === option.iconName &&
+                target.innerPattern === option.innerPattern &&
+                target.rotation === option.rotation;
         case 'irregular_shape_match':
-
-            return target.type === option.type && (target as any).strokeStyle === (option as any).strokeStyle;
+            return target.type === option.type &&
+                (target as any).strokeStyle === (option as any).strokeStyle &&
+                target.rotation === option.rotation;
         default:
             return false;
     }
@@ -59,7 +61,7 @@ export const RULE_POOL: GameRule[] = [
     { id: '2', description: 'Match the same shape', matchType: 'shape' },
     { id: '5', description: 'Same shape but not same color', matchType: 'same_shape_diff_color' },
     { id: '6', description: 'Same color but not same shape', matchType: 'same_color_diff_shape' },
-    { id: '7', description: 'Identical: Same shape and color', matchType: 'same_shape_same_color' },
+    { id: '7', description: 'Same shape and color', matchType: 'same_shape_same_color' },
     { id: '8', description: 'Match the same number', matchType: 'same_value' },
     { id: '9', description: 'Same color but not same number', matchType: 'same_color_diff_value' },
     { id: '10', description: 'Same number but not same color', matchType: 'same_value_diff_color' },
@@ -68,7 +70,7 @@ export const RULE_POOL: GameRule[] = [
     { id: '13', description: 'Same color and shape but not same number', matchType: 'same_color_same_shape_diff_value' },
     { id: '14', description: 'Same shape and number but not same color', matchType: 'same_shape_same_value_diff_color' },
     { id: '15', description: 'Same color and number but not same shape', matchType: 'same_color_same_value_diff_shape' },
-    { id: '16', description: 'Perfect Match: Shape, Color, and Number', matchType: 'triple_match' },
+    { id: '16', description: 'Same Shape, Color, and Number', matchType: 'triple_match' },
     { id: '18', description: 'Match the pattern', matchType: 'pattern_match' },
     { id: '19', description: 'Identify the object', matchType: 'object_id' },
     { id: '20', description: 'Match the complex shape', matchType: 'complex_match' },
@@ -97,7 +99,41 @@ const getColorName = (color: string): string => {
 };
 
 
+const getVisualFingerprint = (attributes: ShapeAttributes, isNumeric: boolean): string => {
+    const parts = [
+        attributes.type,
+        attributes.color,
+        attributes.iconName || '',
+        attributes.innerPattern || '',
+        (attributes as any).strokeStyle || ''
+    ];
+    if (isNumeric) {
+        parts.push(String(attributes.value));
+    }
+    // We intentionally exclude size and rotation to prevent visual similarity
+    return parts.join('|');
+};
+
+const ICON_RELATIONSHIPS: Record<string, string[]> = {
+    'dog': ['animal'],
+    'cat': ['animal'],
+    'bird': ['animal'],
+    'fish': ['animal'],
+    'animal': ['dog', 'cat', 'bird', 'fish', 'animal'],
+    'lemon': ['orange'],
+    'orange': ['lemon'],
+    'cherry': ['strawberry'],
+    'strawberry': ['cherry']
+};
+
+
 export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, options: ShapeAttributes[], correctIndex: number, rule: GameRule, type?: 'standard' | 'word' | 'pattern' | 'object' | 'complex' } => {
+    const isNumeric = [
+        'same_value', 'not_value', 'same_color_diff_value', 'same_value_diff_color',
+        'same_shape_diff_value', 'same_value_diff_shape', 'triple_match',
+        'same_color_same_shape_diff_value', 'same_shape_same_value_diff_color',
+        'same_color_same_value_diff_shape'
+    ].includes(rule.matchType);
 
     if (rule.matchType === 'simple_word_match') {
         const correctShape = ShapeFactory.generateRandomShape();
@@ -125,17 +161,19 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
         }
 
         const shuffled = options.sort(() => Math.random() - 0.5);
-        return { target, options: shuffled, correctIndex: shuffled.indexOf(correctShape), rule, type: 'word' };
+        const correctIndex = shuffled.indexOf(correctShape);
+        return { target, options: shuffled, correctIndex, rule, type: 'word' };
     }
 
     if (rule.matchType === 'complex_match') {
+        // Remove icons that look like patterns (circle-dot, etc.) to ensure zero visual ambiguity
+        const simpleIcons = ['aperture', 'compass', 'award', 'shield', 'hexagon', 'star', 'crown', 'ghost', 'leaf', 'trophy', 'rocket', 'skull'];
 
-        const concentricIcons = ['target', 'circle-dot', 'aperture', 'compass'];
+        const innerPatterns = ['1-dot', '2-dots', '3-dots', 'thin-ring'];
 
-        const innerPatterns = ['1-dot', '2-dots', '3-dots', 'thick-ring', 'thin-ring'];
-        
-        const correctIcon = concentricIcons[Math.floor(Math.random() * concentricIcons.length)];
+        const correctIcon = simpleIcons[Math.floor(Math.random() * simpleIcons.length)];
         const correctInnerPattern = innerPatterns[Math.floor(Math.random() * innerPatterns.length)];
+        const correctRotation = 0; // Standardize to 0 for complex
 
         const targetColor = ShapeFactory.generateRandomShape().color;
 
@@ -150,7 +188,7 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
             innerPattern: correctInnerPattern,
             color: targetColor,
             size: 1,
-            rotation: 0
+            rotation: correctRotation
         };
 
         const correctOption: ShapeAttributes = {
@@ -159,11 +197,11 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
             innerPattern: correctInnerPattern,
             color: correctOptionColor,
             size: 1,
-            rotation: 0
+            rotation: correctRotation
         };
 
         const options = [correctOption];
- 
+
         const usedColors = new Set<string>([targetColor, correctOptionColor]);
 
         while (options.length < 4) {
@@ -179,20 +217,11 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
 
             if (distractorMode < 0.5 && options.length < 3) {
                 dIcon = correctIcon;
-                dInnerPattern = innerPatterns[Math.floor(Math.random() * innerPatterns.length)];
-                while (dInnerPattern === correctInnerPattern ||
-                    options.some(o => o.iconName === dIcon && o.innerPattern === dInnerPattern)) {
-                    dInnerPattern = innerPatterns[Math.floor(Math.random() * innerPatterns.length)];
-                }
+                // Distractor with same icon must have DIFFERENT pattern
+                dInnerPattern = innerPatterns.filter(p => p !== correctInnerPattern)[Math.floor(Math.random() * (innerPatterns.length - 1))];
             } else {
-                dIcon = concentricIcons[Math.floor(Math.random() * concentricIcons.length)];
+                dIcon = simpleIcons.filter(i => i !== correctIcon)[Math.floor(Math.random() * (simpleIcons.length - 1))];
                 dInnerPattern = innerPatterns[Math.floor(Math.random() * innerPatterns.length)];
-
-                while ((dIcon === correctIcon && dInnerPattern === correctInnerPattern) ||
-                    options.some(o => o.iconName === dIcon && o.innerPattern === dInnerPattern)) {
-                    dIcon = concentricIcons[Math.floor(Math.random() * concentricIcons.length)];
-                    dInnerPattern = innerPatterns[Math.floor(Math.random() * innerPatterns.length)];
-                }
             }
 
             const dOption: ShapeAttributes = {
@@ -201,10 +230,14 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
                 innerPattern: dInnerPattern,
                 color: dColor,
                 size: 1,
-                rotation: 0
+                rotation: correctRotation
             };
 
-            if (!options.some(o => o.iconName === dOption.iconName && o.innerPattern === dOption.innerPattern)) {
+            const isDuplicate = options.some(o =>
+                getVisualFingerprint(o, false) === getVisualFingerprint(dOption, false)
+            );
+
+            if (!isDuplicate) {
                 options.push(dOption);
             }
         }
@@ -228,6 +261,8 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
         const count = targetStructure.id === 'all_same' ? Math.floor(Math.random() * 2) + 3 : 3; // 3-4 for all_same, 3 for others
         const structurePattern = targetStructure.generator(count);
 
+        const puzzleColor = ShapeFactory.generateRandomShape().color;
+
         const generatePatternContent = (pattern: number[]): ShapeAttributes[] => {
             const uniqueValues = [...new Set(pattern)];
             const contentMap: Record<number, ShapeAttributes> = {};
@@ -235,6 +270,7 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
             uniqueValues.forEach(val => {
                 const shape = ShapeFactory.generateRandomShape();
                 delete (shape as any).value;
+                shape.color = puzzleColor; // Enforce single color for variety
                 contentMap[val] = shape;
             });
 
@@ -264,7 +300,7 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
 
         const options = [correctOption];
 
- 
+
         const usedStructureIds = new Set([targetStructure.id]);
 
         if (targetStructure.id === 'alternating') usedStructureIds.add('first_last_same');
@@ -289,7 +325,14 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
                 rotation: 0
             };
 
-            options.push(dOption);
+            const isDuplicate = options.some(o =>
+                JSON.stringify(o.subShapes?.map(s => getVisualFingerprint(s, false))) ===
+                JSON.stringify(dOption.subShapes?.map(s => getVisualFingerprint(s, false)))
+            );
+
+            if (!isDuplicate) {
+                options.push(dOption);
+            }
         }
 
         const shuffled = options.sort(() => Math.random() - 0.5);
@@ -297,18 +340,16 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
     }
 
     if (rule.matchType === 'irregular_shape_match') {
-        
+
         const styleVariations = ['filled', 'outlined', 'dotted', 'thick'];
-        
+
         const target = ShapeFactory.generateRandomIrregularShape();
-        
+
         const targetStyle = styleVariations[Math.floor(Math.random() * styleVariations.length)];
         (target as any).strokeStyle = targetStyle;
 
-        
-        
-        const correctRotation = [45, 90, 135, 180, 225, 270, 315][Math.floor(Math.random() * 7)];
-        
+        const correctRotation = target.rotation; // Match target's rotation exactly
+
         let correctColor = ShapeFactory.generateRandomShape().color;
         while (correctColor === target.color) {
             correctColor = ShapeFactory.generateRandomShape().color;
@@ -319,59 +360,28 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
             color: correctColor,
             rotation: correctRotation,
             size: 0.9 + Math.random() * 0.2,
-            strokeStyle: targetStyle 
+            strokeStyle: targetStyle
         } as any;
 
         const options = [correctOption];
-        const usedCombinations = new Set([`${target.type}-${targetStyle}`]);
 
         while (options.length < 4) {
-            const distractorMode = Math.random();
             let distractor: ShapeAttributes;
 
-            if (distractorMode < 0.6 && options.length < 3) {
-                const trapStyles = styleVariations.filter(s => s !== targetStyle);
-                const trapStyle = trapStyles[Math.floor(Math.random() * trapStyles.length)];
-                const trapRotation = [45, 90, 135, 180, 225, 270, 315][Math.floor(Math.random() * 7)];
-                
-                let trapColor = ShapeFactory.generateRandomShape().color;
-                while (trapColor === target.color || trapColor === correctColor) {
-                    trapColor = ShapeFactory.generateRandomShape().color;
-                }
-                
-                const comboKey = `${target.type}-${trapStyle}`;
-                if (!usedCombinations.has(comboKey)) {
-                    distractor = {
-                        type: target.type,
-                        color: trapColor,
-                        rotation: trapRotation,
-                        size: 0.9 + Math.random() * 0.2,
-                        strokeStyle: trapStyle
-                    } as any;
-                    usedCombinations.add(comboKey);
-                } else {
-                    continue;
-                }
-            } else {
+            distractor = ShapeFactory.generateRandomIrregularShape();
+            let dStyle = styleVariations[Math.floor(Math.random() * styleVariations.length)];
+            (distractor as any).strokeStyle = dStyle;
+
+            // Strict uniqueness: distractors MUST NOT match target by type AND style (even if rotation differs)
+            // To be super safe, let's ensure distractors are always different types than target
+            let attempts = 0;
+            while (distractor.type === target.type && attempts++ < 20) {
                 distractor = ShapeFactory.generateRandomIrregularShape();
-                const dStyle = styleVariations[Math.floor(Math.random() * styleVariations.length)];
-                (distractor as any).strokeStyle = dStyle;
-                
-                const comboKey = `${distractor.type}-${dStyle}`;
-  
-                let attempts = 0;
-                while ((distractor.type === target.type || usedCombinations.has(comboKey)) && attempts < 10) {
-                    distractor = ShapeFactory.generateRandomIrregularShape();
-                    (distractor as any).strokeStyle = styleVariations[Math.floor(Math.random() * styleVariations.length)];
-                    attempts++;
-                }
-                usedCombinations.add(comboKey);
+                (distractor as any).strokeStyle = styleVariations[Math.floor(Math.random() * styleVariations.length)];
             }
 
             const isDuplicate = options.some(o =>
-                o.type === distractor.type &&
-                (o as any).strokeStyle === (distractor as any).strokeStyle &&
-                o.color === distractor.color
+                getVisualFingerprint(o, false) === getVisualFingerprint(distractor, false)
             );
 
             if (!isDuplicate) {
@@ -405,10 +415,11 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
 
         const options = [correctOption];
         const usedIcons = [correctIcon];
+        const forbiddenIcons = ICON_RELATIONSHIPS[correctIcon] || [];
 
         while (options.length < 4) {
             const dIcon = OBJECT_ICONS[Math.floor(Math.random() * OBJECT_ICONS.length)];
-            if (!usedIcons.includes(dIcon)) {
+            if (!usedIcons.includes(dIcon) && !forbiddenIcons.includes(dIcon)) {
                 usedIcons.push(dIcon);
                 options.push({
                     type: 'text',
@@ -427,7 +438,7 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
         return { target, options: shuffled, correctIndex: correctIdx, rule, type: 'object' };
     }
 
-    
+
     const target = ShapeFactory.generateRandomShape();
     let correctOption: ShapeAttributes;
 
@@ -534,7 +545,7 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
 
     const options: ShapeAttributes[] = [correctOption];
 
-    const trapThreshold = 0.6; 
+    const trapThreshold = 0.6;
 
     while (options.length < 4) {
         let candidate: ShapeAttributes;
@@ -575,10 +586,7 @@ export const generatePuzzle = (rule: GameRule): { target: ShapeAttributes, optio
         const isCorrect = checkMatch(target, candidate, rule);
 
         const isDuplicate = options.some(o =>
-            o.color === candidate.color &&
-            o.type === candidate.type &&
-            o.value === candidate.value &&
-            Math.abs(o.size - candidate.size) < 0.1
+            getVisualFingerprint(o, isNumeric) === getVisualFingerprint(candidate, isNumeric)
         );
 
         if (!isCorrect && !isDuplicate) {
@@ -615,31 +623,31 @@ export const getRulesByLevel = (level: number): GameRule[] => {
     let allowedTypes: string[] = [];
 
     switch (level) {
-        case 1: 
+        case 1:
             allowedTypes = ['color'];
             break;
-        case 2: 
+        case 2:
             allowedTypes = ['simple_word_match'];
             break;
-        case 3: 
+        case 3:
             allowedTypes = ['shape'];
             break;
-        case 4: 
+        case 4:
             allowedTypes = ['same_value'];
             break;
-        case 5: 
+        case 5:
             allowedTypes = ['object_id'];
             break;
-        case 6: 
+        case 6:
             allowedTypes = ['same_shape_diff_color', 'same_color_diff_shape', 'same_shape_same_color'];
             break;
-        case 7: 
+        case 7:
             allowedTypes = ['same_color_diff_value', 'same_value_diff_color', 'same_color_same_value_diff_shape'];
             break;
-        case 8: 
+        case 8:
             allowedTypes = ['same_shape_diff_value', 'same_value_diff_shape', 'same_shape_same_value_diff_color'];
             break;
-        case 9: 
+        case 9:
             allowedTypes = [
                 'triple_match',
                 'same_color_same_shape_diff_value',
@@ -647,16 +655,16 @@ export const getRulesByLevel = (level: number): GameRule[] => {
                 'same_color_same_value_diff_shape'
             ];
             break;
-        case 10: 
-            allowedTypes = ['complex_match'];
-            break;
-        case 11: 
+        case 10:
             allowedTypes = ['irregular_shape_match'];
             break;
-        case 12: 
+        case 11:
+            allowedTypes = ['complex_match'];
+            break;
+        case 12:
             allowedTypes = ['pattern_match'];
             break;
-        case 13: 
+        case 13:
             allowedTypes = [
                 'complex_match',
                 'irregular_shape_match',

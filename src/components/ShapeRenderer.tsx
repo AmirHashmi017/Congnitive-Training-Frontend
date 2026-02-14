@@ -116,7 +116,9 @@ const ShapeRenderer: React.FC<ShapeRendererProps> = ({
         width,
         height,
         opacity,
-        transform: `scale(${size})`,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         transition: 'all 0.3s ease'
     };
 
@@ -124,9 +126,9 @@ const ShapeRenderer: React.FC<ShapeRendererProps> = ({
         return (
             <div
                 className={`flex items-center justify-center font-black text-center select-none leading-tight ${className}`}
-                style={{ 
-                    ...containerStyle, 
-                    fontSize: 'clamp(0.875rem, 2.5vw, 1.25rem)', 
+                style={{
+                    ...containerStyle,
+                    fontSize: 'clamp(0.875rem, 2.5vw, 1.25rem)',
                     color: color,
                     wordBreak: 'break-word',
                     hyphens: 'auto',
@@ -140,7 +142,7 @@ const ShapeRenderer: React.FC<ShapeRendererProps> = ({
 
     if (type === 'icon') {
         const IconComponent = ICON_MAP[iconName?.toLowerCase() || ''] || Star;
-        
+
         return (
             <div className={`flex items-center justify-center relative ${className}`} style={containerStyle}>
                 {/* Main icon */}
@@ -151,7 +153,7 @@ const ShapeRenderer: React.FC<ShapeRendererProps> = ({
                         style={{ transform: `rotate(${rotation}deg)` }}
                         strokeWidth={attributes.strokeWidth || 2}
                     />
-                    
+
                     {/* Inner pattern variations */}
                     {attributes.innerPattern && (
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -241,6 +243,17 @@ const ShapeRenderer: React.FC<ShapeRendererProps> = ({
                                     }}
                                 />
                             )}
+                            {attributes.innerPattern === 'thin-ring' && (
+                                <div
+                                    style={{
+                                        width: '18px',
+                                        height: '18px',
+                                        border: `1px solid ${color}`,
+                                        borderRadius: '50%',
+                                        opacity: 0.8
+                                    }}
+                                />
+                            )}
                         </div>
                     )}
                 </div>
@@ -251,7 +264,7 @@ const ShapeRenderer: React.FC<ShapeRendererProps> = ({
     if (type === 'pattern') {
         const itemsToRender = subShapes || Array(count || 1).fill({ ...attributes, type: 'circle' });
 
-        
+
         const gridCols = itemsToRender.length > 4 ? 3 : itemsToRender.length > 1 ? 2 : 1;
         const itemSize = itemsToRender.length > 4 ? '1.5rem' : itemsToRender.length > 2 ? '1.75rem' : '2rem';
 
@@ -278,86 +291,88 @@ const ShapeRenderer: React.FC<ShapeRendererProps> = ({
 
     const strokeStyle = (attributes as any).strokeStyle || 'filled';
     const isIrregularShape = type.startsWith('irregular_');
-    
+
     let fillColor = color;
     let strokeColor = 'rgba(0,0,0,0.1)';
     let strokeWidth = 2;
     let strokeDasharray = 'none';
-    
+
     if (isIrregularShape) {
         switch (strokeStyle) {
             case 'filled':
-                
+
                 fillColor = color;
                 strokeColor = 'rgba(0,0,0,0.15)';
                 strokeWidth = 2;
                 break;
             case 'outlined':
-                
+
                 fillColor = 'none';
                 strokeColor = color;
                 strokeWidth = 4;
                 break;
             case 'dotted':
-                
+
                 fillColor = 'none';
                 strokeColor = color;
                 strokeWidth = 3;
                 strokeDasharray = '2,4';
                 break;
             case 'thick':
-                
+
                 fillColor = color;
                 strokeColor = color;
                 strokeWidth = 6;
                 break;
         }
     }
-    
+
     return (
-        <svg
-            viewBox="0 0 100 100"
-            width={width}
-            height={height}
-            className={`transition-all duration-300 ${className}`}
-            style={{
-                transform: `scale(${size})`,
-                opacity: opacity,
-            }}
-        >
-            <path
-                d={getShapePath(attributes)}
-                fill={fillColor}
-                stroke={strokeColor}
-                strokeWidth={strokeWidth}
-                strokeDasharray={strokeDasharray}
+        <div style={containerStyle} className={className}>
+            <svg
+                viewBox="-10 -10 120 120"
+                width="100%"
+                height="100%"
                 className="transition-all duration-300"
                 style={{
-                    transform: `rotate(${rotation}deg)`,
-                    transformOrigin: 'center'
+                    overflow: 'visible'
                 }}
-            />
-            {value !== undefined && (
-                <text
-                    x="50"
-                    y="50"
-                    dominantBaseline="central"
-                    textAnchor="middle"
-                    fill="white"
-                    fontSize="28"
-                    fontWeight="900"
-                    className="select-none pointer-events-none"
+            >
+                <path
+                    d={getShapePath(attributes)}
+                    fill={fillColor}
+                    stroke={strokeColor}
+                    strokeWidth={strokeWidth}
+                    strokeDasharray={strokeDasharray}
+                    className="transition-all duration-300"
                     style={{
-                        paintOrder: 'stroke',
-                        stroke: 'rgba(0,0,0,0.4)',
-                        strokeWidth: '4px',
-                        strokeLinejoin: 'round'
+                        transform: `scale(${size}) rotate(${rotation}deg)`,
+                        transformOrigin: '50% 50%'
                     }}
-                >
-                    {value}
-                </text>
-            )}
-        </svg>
+                />
+                {value !== undefined && (
+                    <text
+                        x="50"
+                        y="50"
+                        dy="0.35em"
+                        dominantBaseline="middle"
+                        textAnchor="middle"
+                        fill="white"
+                        fontSize="28"
+                        fontWeight="900"
+                        className="select-none pointer-events-none"
+                        style={{
+                            paintOrder: 'stroke',
+                            stroke: 'rgba(0,0,0,0.4)',
+                            strokeWidth: '4px',
+                            strokeLinejoin: 'round'
+                        }}
+                    >
+                        {value}
+                    </text>
+                )}
+            </svg>
+        </div>
     );
 };
 

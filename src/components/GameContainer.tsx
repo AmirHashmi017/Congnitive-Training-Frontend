@@ -28,7 +28,7 @@ const GameContainer: React.FC = () => {
 
     return (
         <div className="flex flex-col md:flex-row h-screen w-screen bg-background overflow-hidden relative">
-           
+
             {feedbackPhrase && (
                 <div className="absolute top-24 md:top-8 left-0 right-0 flex items-center justify-center z-[60] pointer-events-none">
                     <div className={`
@@ -42,7 +42,7 @@ const GameContainer: React.FC = () => {
                 </div>
             )}
 
-           
+
             <div className="md:hidden fixed top-0 left-0 right-0 flex items-center justify-between p-4 bg-white border-b-2 border-gray-100 z-50">
                 <h1 className="text-lg font-black text-text uppercase tracking-tight">Matching Game</h1>
                 <button
@@ -53,7 +53,7 @@ const GameContainer: React.FC = () => {
                 </button>
             </div>
 
-            
+
             {isPanelOpen && (
                 <div
                     className="md:hidden fixed inset-0 bg-black/50 z-40"
@@ -62,7 +62,7 @@ const GameContainer: React.FC = () => {
             )}
 
             <div className="flex-1 md:w-2/3 flex flex-col h-full p-4 md:p-6 lg:p-8 md:border-r-2 border-gray-50 min-h-0 pt-20 md:pt-4">
-             
+
                 <div className="w-full mb-3">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="h-2 flex-1 bg-gray-100 rounded-full overflow-hidden">
@@ -82,12 +82,11 @@ const GameContainer: React.FC = () => {
                             {round.rule.description}
                         </h2>
 
-                        <div className={`bg-surface rounded-xl flex items-center justify-center border-2 border-gray-50 shadow-sm ${
-                            round.target.type === 'pattern' ? 'w-full max-w-[200px] h-24 p-2' : 
-                            round.target.type === 'text' ? 'w-full max-w-md px-4 py-3 min-h-[60px]' : 
-                            'w-20 h-20'
-                        }`}>
-                            <ShapeRenderer 
+                        <div className={`bg-surface rounded-xl flex items-center justify-center border-2 border-gray-50 shadow-sm ${round.target.type === 'pattern' ? 'w-full max-w-[200px] h-24 p-2' :
+                            round.target.type === 'text' ? 'w-full max-w-md px-4 py-3 min-h-[60px]' :
+                                'w-20 h-20'
+                            }`}>
+                            <ShapeRenderer
                                 attributes={round.target}
                                 width={round.target.type === 'text' ? '100%' : round.target.type === 'pattern' ? '100%' : '100%'}
                                 height={round.target.type === 'text' ? 'auto' : round.target.type === 'pattern' ? '100%' : '100%'}
@@ -96,7 +95,7 @@ const GameContainer: React.FC = () => {
                     </div>
                 </div>
 
-                
+
                 <div className={`
                     w-full grid gap-3 md:gap-4 flex-1 content-start md:content-center
                     ${round.type === 'pattern' ? 'overflow-visible' : 'overflow-auto'}
@@ -118,7 +117,7 @@ const GameContainer: React.FC = () => {
                 </div>
             </div>
 
-            
+
             <div className={`
                 fixed md:static top-0 right-0 z-50
                 w-full md:w-1/3 bg-white

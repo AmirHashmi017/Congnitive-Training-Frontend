@@ -3,6 +3,7 @@ import type { PuzzleRound } from '../types';
 import { generatePuzzle, getRulesByLevel } from '../utils/solver';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
+import { audioService } from '../utils/audio';
 
 export const useGameEngine = () => {
     const { user, updateUser } = useAuth();
@@ -19,6 +20,7 @@ export const useGameEngine = () => {
     const [feedbackPhrase, setFeedbackPhrase] = useState<string | null>(null);
     const [timer, setTimer] = useState(0);
     const [isGameActive, setIsGameActive] = useState(true);
+    const lastMatchType = useRef<string | null>(null);
 
 
     const sessionStartXP = useRef(xp);
@@ -42,7 +44,16 @@ export const useGameEngine = () => {
     }, [level]);
 
     const startNewRound = useCallback(() => {
-        const availableRules = getRulesByLevel(levelRef.current);
+        let availableRules = getRulesByLevel(levelRef.current);
+
+        // Prevent consecutive same-type questions if more than one type is available
+        if (availableRules.length > 1 && lastMatchType.current) {
+            const filtered = availableRules.filter(r => r.matchType !== lastMatchType.current);
+            if (filtered.length > 0) {
+                availableRules = filtered;
+            }
+        }
+
         const rule = availableRules[Math.floor(Math.random() * availableRules.length)];
         const newPuzzle = generatePuzzle(rule);
 
@@ -53,6 +64,7 @@ export const useGameEngine = () => {
         setRound(newPuzzle as any);
         setFeedback(null);
         setFeedbackPhrase(null);
+        lastMatchType.current = rule.matchType;
     }, []);
 
     useEffect(() => {
@@ -87,13 +99,20 @@ export const useGameEngine = () => {
         if (!round || feedback || !isGameActive) return;
 
         const correctPhrases = ["Great Job", "You are on a roll", "Keep it up", "You are awesome"];
+        const incorrectPhrases = ["Not quite, try again", "Almost! Keep practicing", "Keep trying! Practice makes perfect"];
 
         const isCorrect = index === round.correctIndex;
+
+        if (isCorrect) {
+            audioService.playCorrect();
+        } else {
+            audioService.playIncorrect();
+        }
 
         const nextXP = isCorrect ? xp + 10 + (streak * 2) : xp;
         const nextStreak = isCorrect ? streak + 1 : 0;
 
-     
+
         let nextLevel = level;
         let nextProgress = levelProgress + 1;
         let nextCorrectCount = levelCorrectCount + (isCorrect ? 1 : 0);
@@ -124,18 +143,20 @@ export const useGameEngine = () => {
         if (!isCorrect) {
             nextProgress = 0;
             nextCorrectCount = 0;
-            
+
         }
 
         if (isCorrect) {
             setFeedback('correct');
-            
-            if (nextProgress !== 0) { 
+
+            if (levelUpOccurred) {
+                setFeedbackPhrase("Congrats, you leveled up and earned a seed!");
+            } else if (nextProgress !== 0) {
                 setFeedbackPhrase(correctPhrases[Math.floor(Math.random() * correctPhrases.length)]);
             }
         } else {
             setFeedback('incorrect');
-            setFeedbackPhrase("Incorrect. Progress Reset!");
+            setFeedbackPhrase(incorrectPhrases[Math.floor(Math.random() * incorrectPhrases.length)]);
         }
 
         setStreak(nextStreak);
@@ -145,18 +166,18 @@ export const useGameEngine = () => {
         setLevelProgress(nextProgress);
         setLevelCorrectCount(nextCorrectCount);
 
-       
+
         syncToBackend(nextXP, nextStreak, nextSeeds, nextLevel, nextProgress, nextCorrectCount);
 
-        
+
         setTimeout(() => {
             if (isGameActive) startNewRound();
-        }, 1500); 
+        }, 1500);
     };
 
     const quitGame = async () => {
         setIsGameActive(false);
-        
+
         try {
             await api.post('/user/session', {
                 xpEarned: xp - sessionStartXP.current,

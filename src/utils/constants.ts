@@ -1,17 +1,17 @@
 export const LEVEL_TITLES: Record<number, string> = {
-    1: 'Observer',
-    2: 'Simple Linguist',
-    3: 'Shaper',
-    4: 'Counter',
-    5: 'Visionary',
-    6: 'Dualist',
-    7: 'Spectrum',
-    8: 'Morpher',
-    9: 'Mastermind',
-    10: 'Specialist',
-    11: 'Irregular Shapes',
-    12: 'Patternist',
-    13: 'Infinity'
+    1: 'Seeding',
+    2: 'Sprout',
+    3: 'Rootling',
+    4: 'Planter',
+    5: 'Cultivator',
+    6: 'Grower',
+    7: 'Gardener',
+    8: 'Harvester',
+    9: 'Horticulturist',
+    10: 'Greenkeeper',
+    11: 'Botanist',
+    12: 'Farmer',
+    13: 'Naturalist'
 };
 
 export const OBJECT_ICONS = [

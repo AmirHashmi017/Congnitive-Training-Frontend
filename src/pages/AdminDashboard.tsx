@@ -103,7 +103,7 @@ const AdminDashboard: React.FC = () => {
                     <Icon size={24} />
                 </div>
                 <div className="flex-1 text-left">
-                    <p className="font-black text-text uppercase tracking-tight leading-none">{u.username}</p>
+                    <p className="font-black text-text tracking-tight leading-none">{u.username}</p>
                     <p className="text-[10px] font-bold text-text-muted mt-1 uppercase">XP: {u.stats.xp} • Streak: {u.stats.streak}</p>
                 </div>
                 <ChevronRight size={16} className="text-text-muted" />
@@ -170,7 +170,7 @@ const AdminDashboard: React.FC = () => {
                                     })}
                                 </div>
                                 <div className="flex flex-col">
-                                    <h1 className="text-3xl md:text-5xl font-black text-text uppercase tracking-tighter leading-none">{selectedUser.username}</h1>
+                                    <h1 className="text-3xl md:text-5xl font-black text-text tracking-tighter leading-none">{selectedUser.username}</h1>
                                     <p className="text-text-muted font-black uppercase tracking-widest text-xs md:text-sm mt-2 flex items-center gap-1">
                                         <TrendingUp size={14} className="text-secondary" /> Level {selectedUser.stats.level} {LEVEL_TITLES[selectedUser.stats.level] || 'Explorer'}
                                     </p>
